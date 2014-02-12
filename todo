@@ -1,11 +1,17 @@
 # SERVER
-
-- Create response exception
-- Check if method is exposed before calling
 - Extension for log
 - Extension for metrics
 - Checks for requests
 - Write test for classes
 - Make server more robust to crash (celluloid supervised and linking)
+- option to define server threads dispatcher
 
 # CLIENT
+- create a basic client
+- make client async
+- raise expection on errors
+
+
+# COMMAND LINE
+- utility to query a service for documentation
+- list all service
