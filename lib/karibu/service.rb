@@ -31,7 +31,7 @@ module Karibu
       private
       def check_route(klass, method)
         raise Karibu::Errors::ServiceResourceNotFound unless defined?(klass)
-        raise Karibu::Errors::MethodNotFound unless klass.instance_methods.include?(method)
+        raise Karibu::Errors::MethodNotFound unless klass.methods.include?(method)
       end
     end
 

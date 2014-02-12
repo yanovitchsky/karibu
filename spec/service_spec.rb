@@ -15,7 +15,7 @@ describe Karibu::Service do
   describe ".expose" do
     before do
       class Call
-        def stats;end
+        def self.stats;end
       end
       class Test < Karibu::Service
         expose "call#stats"

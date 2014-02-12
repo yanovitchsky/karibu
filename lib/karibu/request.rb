@@ -1,10 +1,10 @@
 module Karibu
   #[type, msgid, resource, method, params]
   class Request
-    attr_accessor :identity, :uniq_id, :resource, :method_called, :params 
-    def initialize(identity, packet)
-      @identity = identity
+    attr_accessor :uniq_id, :resource, :method_called, :params 
+    def initialize(packet)
       @msg = MessagePack.unpack(packet)
+      check_msg()
       decode()
     end
 
@@ -28,23 +28,23 @@ module Karibu
     end
 
     def check_type
-      raise BadMessageFormat unless (@msg[0].is_a? Integer && @msg[0] != 0)
+      raise Karibu::Errors::BadMessageFormat unless (@msg[0].is_a?(Fixnum) && @msg[0] == 0)
     end
 
     def check_id
-      raise BadMessageFormat unless @msg[1].is_a? Integer
+      raise Karibu::Errors::BadMessageFormat unless @msg[1].is_a? Fixnum
     end
 
     def check_resource
-      raise BadMessageFormat unless @msg[2].is_a? String
+      raise Karibu::Errors::BadMessageFormat unless @msg[2].is_a? String
     end
 
     def check_method
-      raise BadMessageFormat unless @msg[3].is_a? String
+      raise Karibu::Errors::BadMessageFormat unless @msg[3].is_a? ::String
     end
 
     def check_params
-      raise BadMessageFormat unless @msg[4].is_a? Array
+      raise Karibu::Errors::BadMessageFormat unless @msg[4].is_a? ::Array
     end
   end
 end

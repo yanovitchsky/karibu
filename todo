@@ -1,0 +1,11 @@
+# SERVER
+
+- Create response exception
+- Check if method is exposed before calling
+- Extension for log
+- Extension for metrics
+- Checks for requests
+- Write test for classes
+- Make server more robust to crash (celluloid supervised and linking)
+
+# CLIENT

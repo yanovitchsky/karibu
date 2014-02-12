@@ -8,14 +8,14 @@ module Karibu
     end
 
     def process_request(msg)
-      request = Karibu::Request.new(nil, msg)
+      request = Karibu::Request.new(msg)
       begin
         klass = Kernel.const_get(request.resource.capitalize)
         meth = request.method_called.to_sym
-        result = klass.new.send(meth, *request.params)
-        response = Karibu::Response.new(request.identity, 1, request.uniq_id, nil, [result])
+        result = klass.send(meth, *request.params)
+        response = Karibu::Response.new(1, request.uniq_id, nil, [result])
       rescue NameError => e
-        e
+      
       rescue Karibu::Errors::ServiceResourceNotFound => e
          e
       rescue Karibu::Errors::MethodNotFound => e
@@ -27,12 +27,9 @@ module Karibu
 
     def run
       loop do
-        p "waiting for request"
         buff = ""
         @socket.recv_string(buff)
-        p buff
         response = process_request(buff)
-        p response
         @socket.send_string(response.encode(), 0)
       end
     end

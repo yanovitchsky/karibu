@@ -132,7 +132,7 @@ class NClient
 end
 
 client = NClient.new(addr)
-msg = MessagePack.pack([0, 1, 'Message', 'toto', []])
+msg = MessagePack.pack([0, 1, 'Message', 'echo', []])
 
 client.write(msg)
 p client.recv()

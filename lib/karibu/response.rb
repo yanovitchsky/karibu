@@ -1,8 +1,6 @@
 module Karibu
   class Response
-    attr_accessor :identity
-    def initialize(identity, type, id, error, result)
-      @identity = identity
+    def initialize(type, id, error, result)
       @type = type
       @id = id
       @error = error

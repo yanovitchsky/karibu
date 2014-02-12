@@ -1,5 +1,5 @@
-require "spec_helper"
+# require "spec_helper"
 
-describe Karibu::Controller do
+# describe Karibu::Controller do
   
-end
+# end

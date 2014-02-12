@@ -21,5 +21,32 @@ describe Karibu::Request do
         expect(request.params).to eq([23])
       end
     end
+    context "when packet is malformed" do
+
+      it 'raises BadMessageFormat on type' do
+        packet = MessagePack.pack([1, 1, 'Call', 'stats', []])
+        expect { Karibu::Request.new(packet)}.to raise_error(Karibu::Errors::BadMessageFormat)
+      end
+
+      it 'raises BadMessageFormat on id' do
+        packet = MessagePack.pack([0, '1', 'Call', 'stats', []])
+        expect { Karibu::Request.new(packet)}.to raise_error(Karibu::Errors::BadMessageFormat)
+      end
+
+      it 'raises BadMessageFormat on resource' do
+        packet = MessagePack.pack([0, 1, 12, 'stats', []])
+        expect { Karibu::Request.new(packet)}.to raise_error(Karibu::Errors::BadMessageFormat)
+      end
+
+      it 'raises BadMessageFormat on method_called' do
+        packet = MessagePack.pack([0, 1, 'Call', 2, []])
+        expect { Karibu::Request.new(packet)}.to raise_error(Karibu::Errors::BadMessageFormat)
+      end
+
+      it 'raises BadMessageFormat on params' do
+        packet = MessagePack.pack([0, 1, 'Call', 'stats', 12])
+        expect { Karibu::Request.new(packet)}.to raise_error(Karibu::Errors::BadMessageFormat)
+      end 
+    end
   end
 end
