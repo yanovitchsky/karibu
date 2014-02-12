@@ -14,39 +14,39 @@ class TestService < Karibu::Service
   expose 'message#echo'  
 end
 
-class Client
-  include Celluloid::ZMQ
+# class Client
+#   include Celluloid::ZMQ
 
-  def initialize(address)
-    @socket = ReqSocket.new
+#   def initialize(address)
+#     @socket = ReqSocket.new
 
-    begin
-      @socket.connect(address)
-    rescue IOError
-      @socket.close
-      raise
-    end
-  end
+#     begin
+#       @socket.connect(address)
+#     rescue IOError
+#       @socket.close
+#       raise
+#     end
+#   end
 
-  def write(message)
-    @socket.send(message)
-    nil
-  end
+#   def write(message)
+#     @socket.send(message)
+#     nil
+#   end
 
-  def recv
-    # # id = @socket.recv()
-    # # msg = @socket.read
-    # p "waiting on recv"
-    # loop { p @socket.read }
-    # # p id
-    # # p msg
-    p 'reading'
-    test = ''
-    @socket.read test
-    p "got response: #{test}"
+#   def recv
+#     # # id = @socket.recv()
+#     # # msg = @socket.read
+#     # p "waiting on recv"
+#     # loop { p @socket.read }
+#     # # p id
+#     # # p msg
+#     p 'reading'
+#     test = ''
+#     @socket.read test
+#     p "got response: #{test}"
     
-  end
-end
+#   end
+# end
 
 
 

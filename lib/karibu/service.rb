@@ -40,7 +40,7 @@ module Karibu
 
 
     def initialize
-      @server = Karibu::Server.new(self.class.addr, self)
+      @server = Karibu::Server.new(self.class.addr)
       @server.async.run
     end
 

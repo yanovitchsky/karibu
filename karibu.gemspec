@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "celluloid-io"
   spec.add_dependency "celluloid-zmq"
   spec.add_dependency "msgpack"
+  spec.add_dependency "concurrent-ruby"
 end
