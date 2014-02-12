@@ -2,7 +2,8 @@ module Karibu
   class Dispatcher
     include ::Celluloid
 
-    def initialize(ctx, url)
+    def initialize(ctx, url, routes)
+      @routes = routes
       @socket = ctx.socket(::ZMQ::REP)
       @socket.connect(url)
     end
@@ -12,16 +13,12 @@ module Karibu
       begin
         klass = Kernel.const_get(request.resource.capitalize)
         meth = request.method_called.to_sym
+        raise Karibu::Errors::ServiceResourceNotFound unless @routes.has_key?(klass)
+        raise Karibu::Errors::MethodNotFound unless @routes[klass] == meth
         result = klass.send(meth, *request.params)
-        response = Karibu::Response.new(1, request.uniq_id, nil, [result])
-      rescue NameError => e
-      
-      rescue Karibu::Errors::ServiceResourceNotFound => e
-         e
-      rescue Karibu::Errors::MethodNotFound => e
-        e
-      rescue Error => e
-        e
+        response = Karibu::Response.new(1, request.uniq_id, nil, result)
+      rescue Exception => e  
+        response = Karibu::Response.new(1, request.uniq_id, e.to_s, nil)
       end
     end
 
