@@ -1,9 +1,9 @@
-require 'rubygems'
-require 'ffi-rzmq'
-require 'celluloid/zmq'
-require 'msgpack'
-require File.expand_path('../request', __FILE__)
-
+# require 'rubygems'
+# require 'ffi-rzmq'
+# require 'celluloid/zmq'
+# require 'msgpack'
+# require File.expand_path('../request', __FILE__)
+require File.expand_path('../../karibu', __FILE__)
 
 # Celluloid::ZMQ.init
 
@@ -108,31 +108,49 @@ require File.expand_path('../request', __FILE__)
 addr = "tcp://127.0.0.1:8900"
 
 
-class NClient
-  # include Celluloid
-  def initialize(addr)
-    ctx = ::ZMQ::Context.new(1)
-    @socket = ctx.socket(::ZMQ::REQ)
-    begin
-      @socket.connect(addr)
-    rescue IOError
-      @socket.close
-    end
-  end
+# class NClient
+#   # include Celluloid
+#   def initialize(addr)
+#     ctx = ::ZMQ::Context.new(1)
+#     @socket = ctx.socket(::ZMQ::REQ)
+#     begin
+#       @socket.connect(addr)
+#     rescue IOError
+#       @socket.close
+#     end
+#   end
 
-  def write(msg)
-    @socket.send_string(msg)
-  end
+#   def write(msg)
+#     @socket.send_string(msg)
+#   end
 
-  def recv
-    s = ""
-    @socket.recv_string s
-    MessagePack.unpack s
-  end
+#   def recv
+#     s = ""
+#     @socket.recv_string s
+#     MessagePack.unpack s
+#   end
+# end
+
+# client = NClient.new(addr)
+# msg = MessagePack.pack([0, 1, 'Message', 'toto', []])
+
+# client.write(msg)
+# p client.recv()
+
+class MessageService < Karibu::Client
+  connection_string "tcp://127.0.0.1:8900"
 end
 
-client = NClient.new(addr)
-msg = MessagePack.pack([0, 1, 'Message', 'toto', []])
+# MessageService.connect
 
-client.write(msg)
-p client.recv()
+p "result: ------->"
+p MessageService::Message.echo
+p MessageService::Message.echo
+p MessageService::Message.echo
+p MessageService::Message.hello
+rescue Karibu::Errors::MethodNotFound => e
+  p e.message
+end
+# MessageService::Message.echo
+# MessageService::Message.echo
+# sleep

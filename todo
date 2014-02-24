@@ -10,6 +10,8 @@
 - create a basic client
 - make client async
 - raise expection on errors
+- generate new id on every calls
+- disconnect client
 
 
 # COMMAND LINE

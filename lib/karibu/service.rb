@@ -22,6 +22,7 @@ module Karibu
       end
 
       def start
+        raise "You should define a connection_string" if @addr.nil?
         Celluloid::ZMQ.init
         @routes.freeze
         self.new()

@@ -12,6 +12,7 @@ require "karibu/response"
 require "karibu/queue"
 require "karibu/dispatcher"
 require "karibu/server"
+require "karibu/client"
 require "karibu/service"
 
 module Karibu

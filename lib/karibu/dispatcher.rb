@@ -9,16 +9,16 @@ module Karibu
     end
 
     def process_request(msg)
-      request = Karibu::Request.new(msg)
+      request = Karibu::ServerRequest.new(msg).decode()
       begin
         klass = Kernel.const_get(request.resource.capitalize)
         meth = request.method_called.to_sym
         raise Karibu::Errors::ServiceResourceNotFound unless @routes.has_key?(klass)
         raise Karibu::Errors::MethodNotFound unless @routes[klass] == meth
         result = klass.send(meth, *request.params)
-        response = Karibu::Response.new(1, request.uniq_id, nil, result)
+        response = Karibu::ServerResponse.new(1, request.uniq_id, nil, result)
       rescue Exception => e  
-        response = Karibu::Response.new(1, request.uniq_id, e.to_s, nil)
+        response = Karibu::ServerResponse.new(1, request.uniq_id, e.to_s, nil)
       end
     end
 

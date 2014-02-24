@@ -5,9 +5,9 @@ module Karibu
     def initialize(address, routes)
       @routes = routes
       @address = address
-      @workers_url = "inproc://workers"
+      @workers_url = "inproc://karibu_server"
       @ctx = ::ZMQ::Context.new(1)
-      @queue = Karibu::Queue.new(@ctx, @address, @workers_url)
+      @queue = Karibu::Queue.new(@ctx, @address, @workers_url, :server)
     end
 
     def run
