@@ -7,11 +7,7 @@
 - option to define server threads dispatcher
 
 # CLIENT
-- create a basic client
-- make client async
-- raise expection on errors
-- generate new id on every calls
-- disconnect client
+- check client async
 
 
 # COMMAND LINE

@@ -9,10 +9,6 @@ module Karibu
       check_msg()
     end
 
-    # def initialize(packet)
-    #   @packet = packet
-    # end
-
     def encode
       MessagePack.pack([@type, @id, @error, @result])
     end

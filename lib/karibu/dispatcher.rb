@@ -11,7 +11,7 @@ module Karibu
     def process_request(msg)
       request = Karibu::ServerRequest.new(msg).decode()
       begin
-        klass = Kernel.const_get(request.resource.capitalize)
+        klass = Kernel.const_get(request.resource.capitalize) rescue (raise Karibu::Errors::ServiceResourceNotFound)
         meth = request.method_called.to_sym
         raise Karibu::Errors::ServiceResourceNotFound unless @routes.has_key?(klass)
         raise Karibu::Errors::MethodNotFound unless @routes[klass] == meth

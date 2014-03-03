@@ -4,11 +4,9 @@ module Karibu
     end
 
     class ServiceResourceNotFound < StandardError
-    
     end
 
     class MethodNotFound < StandardError
-      
     end
   end
 end

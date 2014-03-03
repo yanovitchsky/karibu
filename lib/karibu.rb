@@ -7,7 +7,8 @@ require 'msgpack'
 require 'concurrent'
 require "karibu/version"
 require "karibu/errors"
-require "karibu/request"
+require "karibu/server_request"
+require "karibu/client_request"
 require "karibu/response"
 require "karibu/queue"
 require "karibu/dispatcher"
