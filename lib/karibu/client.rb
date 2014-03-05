@@ -11,6 +11,7 @@ module Karibu
       @socket.send_string(request, 0)
       buff = ""
       @socket.recv_string(buff)
+      @socket.close
       return buff
     end
   end

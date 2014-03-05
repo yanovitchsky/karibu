@@ -13,8 +13,9 @@ module Karibu
     def run
       p  "server started on #{@address}"
       @queue.async.run
-      pool = Karibu::Dispatcher.pool(size: 10, args: [@ctx, @workers_url, @routes])
-      (0..10).each do
+      pool_size = 10
+      pool = Karibu::Dispatcher.pool(size: pool_size, args: [@ctx, @workers_url, @routes])
+      pool_size.times do
         pool.async.run
       end
     end
