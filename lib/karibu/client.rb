@@ -17,8 +17,6 @@ module Karibu
   end
 
   class Client
-    include ::Celluloid
-
     ## Class Method
     class << self
       attr_accessor :addr, :instance
@@ -33,8 +31,6 @@ module Karibu
 
       def connect
         raise "You should define a connection_string" if @addr.nil?
-        # @instance = self.new(@addr)
-        # @instance.async.launch_queue
       end
 
       def const_missing(kl)
@@ -53,40 +49,6 @@ module Karibu
         klass = const_set(kl, anon_class)
       end
     end
-
-    # instance methods
-
-    # def initialize(addr)
-    #   @address = addr
-    #   # @workers_url = "inproc://Karibu_clients"
-    #   @ctx = ::ZMQ::Context.new(1)
-    #   @requester = Requester.new(@ctx, @address)
-    #   # @queue = Karibu::Queue.new(@ctx, @address, @workers_url, :client)
-    # end
-
-    # # def run
-    # #   p "client started on #{@address}"
-    # #   @queue.async.run
-    # #   # pool = Karibu::Requester.pool(size: 10, args: [@ctx, @workers_url])
-    # # end
-
-    # def launch_queue
-    #   p "client started on #{@address}"
-    #   @queue.run
-    # end
-
-    # def send_request(request)
-    #   # requester = Requester.new(@ctx, @workers_url)
-    #   @requester.call_rpc(request.encode())
-    # end
   end
 end
 
-# class MessageService < Karibu::Service
-#   connection_string "tcp:127.0.0.1:8900"
-# end
-
-# MessageService.connect
-
-
-# s = MessageService::Message.future.echo

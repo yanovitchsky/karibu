@@ -3,7 +3,7 @@ module Karibu
     include Celluloid
     #class
     class << self
-      attr_accessor :addr, :routes, :server
+      attr_accessor :addr, :routes, :server, :numberofthreads
       def connection_string cs
         @addr = cs
       end
@@ -19,6 +19,10 @@ module Karibu
         rescue NameError => e
           raise Karibu::Errors::ServiceResourceNotFound
         end
+      end
+
+      def threads numberofthreads
+        @numberofthreads = (numberofthreads < 2) ? 2 : ( (numberofthreads < 100) ? 100 : numberofthreads )
       end
 
       def start
@@ -41,7 +45,8 @@ module Karibu
 
 
     def initialize
-      @server = Karibu::Server.new(self.class.addr, self.class.routes)
+      numberofthreads = self.class.numberofthreads || 10
+      @server = Karibu::Server.new(self.class.addr, self.class.routes, numberofthreads)
       @server.async.run
     end
 

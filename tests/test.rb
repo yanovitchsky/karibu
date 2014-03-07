@@ -3,7 +3,7 @@
 # require 'celluloid/zmq'
 # require 'msgpack'
 # require File.expand_path('../request', __FILE__)
-require File.expand_path('../../karibu', __FILE__)
+require File.expand_path('../../lib/karibu/', __FILE__)
 
 # Celluloid::ZMQ.init
 
@@ -144,13 +144,19 @@ end
 # MessageService.connect
 
 p "result: ------->"
+# threads = []
+# 10.times do
+#   threads << Thread.new {p MessageService::Message.echo}
+# end
+
+# threads.each{|t| t.join }
 p MessageService::Message.echo
-p MessageService::Message.echo
-p MessageService::Message.echo
-p MessageService::Message.hello
-rescue Karibu::Errors::MethodNotFound => e
-  p e.message
-end
+# p MessageService::Message.echo
+# p MessageService::Message.hello
+# rescue Karibu::Errors::MethodNotFound => e
+#   p e.message
+# end
 # MessageService::Message.echo
 # MessageService::Message.echo
 # sleep
+# Thread.join()

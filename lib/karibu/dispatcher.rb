@@ -23,6 +23,7 @@ module Karibu
     end
 
     def run
+      p "ready to serve"
       loop do
         buff = ""
         @socket.recv_string(buff)

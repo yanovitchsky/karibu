@@ -1,10 +1,12 @@
 require 'rubygems'
-require 'bundler/setup'
+# require 'bundler/setup'
 require 'celluloid'
 require 'ffi-rzmq'
 require 'celluloid/zmq'
 require 'msgpack'
-require 'concurrent'
+# require 'msgpack' unless defined? JRUBY_VERSION
+# require "msgpack-jruby" if defined? JRUBY_VERSION
+# require 'concurrent'
 require "karibu/version"
 require "karibu/errors"
 require "karibu/server_request"

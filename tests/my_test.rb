@@ -1,5 +1,5 @@
 require 'ffi-rzmq'
-require File.expand_path('../../karibu', __FILE__)
+require File.expand_path('../../lib/karibu', __FILE__)
 
 
 addr = "tcp://127.0.0.1:8900"
