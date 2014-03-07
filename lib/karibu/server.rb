@@ -3,6 +3,7 @@ module Karibu
     include ::Celluloid
 
     def initialize(address, routes, numberofthreads)
+      @logger = Karibu::Logger.new()
       @routes = routes
       @address = address
       @workers_url = "inproc://karibu_server"
@@ -12,10 +13,10 @@ module Karibu
     end
 
     def run
-      p  "server started on #{@address} with #{@numberofthreads} threads"
+      @logger.async.info "server started on #{@address} with #{@numberofthreads} threads"
       Celluloid::Actor[:queue].async.run
       pool = Karibu::Dispatcher.pool(size: @numberofthreads, args: [@ctx, @workers_url, @routes])
-      pool.async.run
+      @numberofthreads.times { pool.async.run}
     end
 
     # class GroupSupervisor

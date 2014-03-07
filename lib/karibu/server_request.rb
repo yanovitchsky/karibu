@@ -20,6 +20,10 @@ module Karibu
 
     def type=(type);end
 
+    def to_s
+      "[:id => #{uniq_id}, :resource => #{resource}, :method => #{method_called}, :params => #{params.join(',')}]"
+    end
+
     private
 
     def check_msg

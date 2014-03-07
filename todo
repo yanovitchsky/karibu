@@ -3,8 +3,7 @@
 - Extension for metrics
 - Checks for requests
 - Write test for classes
-- Make server more robust to crash (celluloid supervised and linking)
-- option to define server threads dispatcher
+- Make server more robust to crash (celluloid supervised and linking) (done but should be put to the test)
 
 # CLIENT
 - check client async
@@ -13,3 +12,9 @@
 # COMMAND LINE
 - utility to query a service for documentation
 - list all service
+
+
+# ALL
+
+- define transaction id
+- streaming method

@@ -144,13 +144,14 @@ end
 # MessageService.connect
 
 p "result: ------->"
-# threads = []
-# 10.times do
-#   threads << Thread.new {p MessageService::Message.echo}
-# end
+threads = []
+10.times do |x|
+  threads << Thread.new {p "thread #{x} ===>"; p MessageService::Message.echo}
+end
 
-# threads.each{|t| t.join }
-p MessageService::Message.echo
+threads.each{|t| t.join }
+p MessageService::Message.test
+# p MessageService::Message.echo
 # p MessageService::Message.echo
 # p MessageService::Message.hello
 # rescue Karibu::Errors::MethodNotFound => e

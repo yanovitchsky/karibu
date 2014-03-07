@@ -1,6 +1,6 @@
 module Karibu
   class Service
-    include Celluloid
+    include ::Celluloid
     #class
     class << self
       attr_accessor :addr, :routes, :server, :numberofthreads

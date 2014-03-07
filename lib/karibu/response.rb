@@ -13,15 +13,16 @@ module Karibu
       MessagePack.pack([@type, @id, @error, @result])
     end
 
-    def decode
-      [:type, :id, :error, :result].each_with_index do |m, i|
-        self.send(m, )
-      end
-      self
-    end
+    # def decode
+    #   [:type, :id, :error, :result].each_with_index do |m, i|
+    #     self.send(m, )
+    #   end
+    #   self
+    # end
 
-    def decode
-      
+
+    def to_s
+     "[:id => #{id}, :error => #{error}, :result => #{result}]"
     end
 
     private
