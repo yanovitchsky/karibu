@@ -1,5 +1,5 @@
 # SERVER
-- Extension for log
+- Extension for log (Add more logs)
 - Extension for metrics
 - Checks for requests
 - Write test for classes
