@@ -8,7 +8,7 @@ module Karibu
         @addr = cs
       end
 
-      def expose route_string
+      def expose route_string, &block
         begin
           @routes ||= {}
           klass, meth = route_string.split('#')
@@ -16,7 +16,11 @@ module Karibu
           the_meth = meth.to_sym
           check_route(the_klass, the_meth)
           @routes[the_klass] = the_meth
+          if block_given?
+            doc = Karibu::Doc.new(route_string, &block)
+          end
         rescue NameError => e
+          p e
           raise Karibu::Errors::ServiceResourceNotFound
         end
       end

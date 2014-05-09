@@ -3,17 +3,46 @@ require File.expand_path('../../lib/karibu', __FILE__)
 
 
 addr = "tcp://127.0.0.1:8900"
+
+class Documentation
+  #
+  # returns documentations for services
+  #
+  #
+  # @return [String] formatted doc string
+  # 
+  def self.call
+    Karibu::Doc.serve_doc
+  end
+end
+
 class Message
+
   def self.echo
     "hello world"
   end
 end
 
+# Karibu::Doc.new do
+#   desc 'permits name for someone'
+#   arg 'x', type: String, desc: "name of string"
+# end
+
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
-  expose 'message#echo'  
+  # expose 'Message#echo'
+  expose 'Documentation#call'
+  expose 'Message#echo' do
+    desc 'permits name for someone'
+    arg 'x', type: String, desc: "name of string"
+    arg 'c', type: Integer, desc: "number of stripes"
+    returns "string containing hello word", String
+  end
 end
 
+
+p Documentation.call
+#Message.echo(x:String) # "permits name for someone", x:String(name of string)
 # class Client
 #   include Celluloid::ZMQ
 

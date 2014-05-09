@@ -5,10 +5,12 @@ require 'ffi-rzmq'
 require 'celluloid/zmq'
 require 'msgpack'
 require "log4r"
+require "hamster"
 # require 'msgpack' unless defined? JRUBY_VERSION
 # require "msgpack-jruby" if defined? JRUBY_VERSION
 # require 'concurrent'
 require "karibu/version"
+require "karibu/doc"
 require "karibu/errors"
 require "Karibu/logger"
 require "karibu/server_request"
