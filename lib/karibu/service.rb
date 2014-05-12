@@ -12,7 +12,7 @@ module Karibu
         begin
           @routes ||= {}
           klass, meth = route_string.split('#')
-          the_klass = Kernel.const_get(klass.capitalize)
+          the_klass = Kernel.const_get(klass)
           the_meth = meth.to_sym
           check_route(the_klass, the_meth)
           @routes[the_klass] = the_meth
