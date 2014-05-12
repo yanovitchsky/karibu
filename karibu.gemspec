@@ -23,13 +23,13 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "pry"
   spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency "msgpack"
 
 
   spec.add_dependency "celluloid-io"
   spec.add_dependency "celluloid-zmq"
   spec.add_dependency "log4r"
   spec.add_dependency "hamster"
+  spec.add_dependency "msgpack"
   # spec.add_dependency "msgpack" if RUBY_PLATFORM != 'java'
   # spec.add_dependency "msgpack-jruby" if RUBY_PLATFORM == 'java'
   # spec.add_dependency "concurrent-ruby"
