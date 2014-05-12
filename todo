@@ -5,6 +5,9 @@
 - Write test for classes
 - Make server more robust to crash (celluloid supervised and linking) (done but should be put to the test)
 
+- hash with indefferent access for params
+- define a class and expose class public method a la rails (a verifier)
+
 # CLIENT
 - check client async
 

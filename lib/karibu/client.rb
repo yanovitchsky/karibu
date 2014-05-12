@@ -34,6 +34,7 @@ module Karibu
       end
 
       def const_missing(kl)
+        p kl
         raise "You should define a connection_string" if @addr.nil?
         xaddr = @addr
         anon_class = Class.new do

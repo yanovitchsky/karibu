@@ -137,12 +137,16 @@ addr = "tcp://127.0.0.1:8900"
 # client.write(msg)
 # p client.recv()
 
-class MessageService < Karibu::Client
+class CallService < Karibu::Client
   connection_string "tcp://127.0.0.1:8900"
 end
-
+# puts CallService::Documentation.call
+# params[:phone_id], :call_tracking_id => params[:call_tracking_id]
+10.times do
+  puts CallService::StatService.call_per_day({phone_id: '513078e88a5da5d852000030', call_tracking_id: '5130784b8a5da5d85200002e', start_date: '2014-04-12', end_date: '2014-05-11'})
+end
 # MessageService.connect
-puts MessageService::Documentation.call
+# puts MessageService::Documentation.call
 
 # p "result: ------->"
 # threads = []
@@ -152,7 +156,7 @@ puts MessageService::Documentation.call
 
 # threads.each{|t| t.join }
 # p MessageService::Message.test
-p MessageService::Message.echo
+# p MessageService::Message.echo
 # p MessageService::Message.echo
 # p MessageService::Message.hello
 # rescue Karibu::Errors::MethodNotFound => e

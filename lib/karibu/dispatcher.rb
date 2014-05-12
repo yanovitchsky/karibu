@@ -10,11 +10,13 @@ module Karibu
     end
 
     def process_request(msg)
+      p msg
       begin_t = Time.now
       request = Karibu::ServerRequest.new(msg).decode()
       @logger.async.info request.to_s
       begin
-        klass = Kernel.const_get(request.resource.capitalize)
+        p request.resource
+        klass = Kernel.const_get(request.resource)
         meth = request.method_called.to_sym
         raise Karibu::Errors::ServiceResourceNotFound unless @routes.has_key?(klass)
         raise Karibu::Errors::MethodNotFound unless @routes[klass] == meth
