@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "celluloid-zmq"
   spec.add_dependency "log4r"
   spec.add_dependency "hamster"
-  spec.add_dependency "msgpack"
+  # spec.add_dependency "msgpack-jruby"
   # spec.add_dependency "msgpack" if RUBY_PLATFORM != 'java'
   # spec.add_dependency "msgpack-jruby" if RUBY_PLATFORM == 'java'
   # spec.add_dependency "concurrent-ruby"

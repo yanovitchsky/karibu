@@ -3,6 +3,8 @@
 # require 'celluloid/zmq'
 # require 'msgpack'
 # require File.expand_path('../request', __FILE__)
+require 'benchmark'
+require 'net/http'
 require File.expand_path('../../lib/karibu/', __FILE__)
 
 # Celluloid::ZMQ.init
@@ -142,8 +144,31 @@ class CallService < Karibu::Client
 end
 # puts CallService::Documentation.call
 # params[:phone_id], :call_tracking_id => params[:call_tracking_id]
-10.times do
-  puts CallService::StatService.call_per_day({phone_id: '513078e88a5da5d852000030', call_tracking_id: '5130784b8a5da5d85200002e', start_date: '2014-04-12', end_date: '2014-05-11'})
+Benchmark.bm do |bm|
+  bm.report do
+    arr = []
+    200.times do
+      arr << Celluloid::Future.new do
+        uri = URI("http://127.0.0.1:9000/v1/stats/callperday?call_tracking_id=5130784b8a5da5d85200002e&phone_id=513078e88a5da5d852000030&start_date=2014-02-12&end_date=2014-05-11")
+        Net::HTTP.get uri # => String
+      end
+      s = arr.map {|a| a.value}
+      # CallService::StatService.call_per_day({phone_id: '513078e88a5da5d852000030', call_tracking_id: '5130784b8a5da5d85200002e', start_date: '2014-02-12', end_date: '2014-05-11'})
+    end
+  end
+end
+# Net::HTTP.get("http://127.0.0.1:9000/v1/stats/callperday?call_tracking_id=5130784b8a5da5d85200002e&phone_id=513078e88a5da5d852000030&start_date=2014-02-12&end_date=2014-05-11") # => String
+
+Benchmark.bm do |bm|
+  bm.report do
+    arr = []
+    200.times do
+      arr << Celluloid::Future.new do
+        CallService::StatService.call_per_day({phone_id: '513078e88a5da5d852000030', call_tracking_id: '5130784b8a5da5d85200002e', start_date: '2014-02-12', end_date: '2014-05-11'})
+      end
+      s = arr.map{|a| a.value}
+    end
+  end
 end
 # MessageService.connect
 # puts MessageService::Documentation.call

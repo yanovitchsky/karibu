@@ -7,6 +7,7 @@
 
 - hash with indefferent access for params
 - define a class and expose class public method a la rails (a verifier)
+- timeout for request
 
 # CLIENT
 - check client async

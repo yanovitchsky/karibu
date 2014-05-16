@@ -26,7 +26,7 @@ module Karibu
       end
 
       def threads numberofthreads
-        @numberofthreads = (numberofthreads < 2) ? 2 : ( (numberofthreads < 100) ? 100 : numberofthreads )
+        @numberofthreads = (numberofthreads < 2) ? 2 : ( (numberofthreads > 100) ? 100 : numberofthreads )
       end
 
       def start
