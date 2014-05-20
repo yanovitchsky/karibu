@@ -3,7 +3,7 @@ module Karibu
     include ::Celluloid
     #class
     class << self
-      attr_accessor :addr, :routes, :server, :numberofthreads
+      attr_accessor :addr, :routes, :server, :numberofthreads, :options, :timeout
       def connection_string cs
         @addr = cs
       end
@@ -21,12 +21,18 @@ module Karibu
           end
         rescue NameError => e
           p e
-          raise Karibu::Errors::ServiceResourceNotFound
+          raise Karibu::Errors::ServiceResourceNotFoundError
         end
       end
 
       def threads numberofthreads
+        # init_options
         @numberofthreads = (numberofthreads < 2) ? 2 : ( (numberofthreads > 100) ? 100 : numberofthreads )
+        # @options[:number_of_threads] = @numberofthreads 
+      end
+
+      def response_timeout timeout
+        @timeout = timeout     
       end
 
       def start
@@ -39,8 +45,12 @@ module Karibu
 
       private
       def check_route(klass, method)
-        raise Karibu::Errors::ServiceResourceNotFound unless defined?(klass)
-        raise Karibu::Errors::MethodNotFound unless klass.methods.include?(method)
+        raise Karibu::Errors::ServiceResourceNotFoundError unless defined?(klass)
+        raise Karibu::Errors::MethodNotFoundError unless klass.methods.include?(method)
+      end
+
+      def init_options
+        @options ||= {}
       end
     end
 
@@ -49,8 +59,10 @@ module Karibu
 
 
     def initialize
+      options = {}
       numberofthreads = self.class.numberofthreads || 10
-      @server = Karibu::Server.new(self.class.addr, self.class.routes, numberofthreads)
+      options[:timeout] = self.class.timeout || 60
+      @server = Karibu::Server.new(self.class.addr, self.class.routes, numberofthreads, options)
       @server.async.run
     end
 
@@ -65,9 +77,9 @@ module Karibu
         @server.send_to_client(response)
       rescue NameError => e
 
-      rescue Karibu::Errors::ServiceResourceNotFound => e
+      rescue Karibu::Errors::ServiceResourceNotFoundError => e
 
-      rescue Karibu::Errors::MethodNotFound => e
+      rescue Karibu::Errors::MethodNotFoundError => e
 
       rescue Error => e
         

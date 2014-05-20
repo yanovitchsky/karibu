@@ -8,9 +8,14 @@
 - hash with indefferent access for params
 - define a class and expose class public method a la rails (a verifier)
 - timeout for request
+- add a circut breaker
+- trapping exit
+- investigate nesty error gem
+- add exception handler proc
 
 # CLIENT
 - check client async
+- treats all hash with hash_with_indefferent_access
 
 
 # COMMAND LINE

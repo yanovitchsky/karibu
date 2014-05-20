@@ -19,6 +19,7 @@ end
 class Message
 
   def self.echo
+    sleep(15)
     "hello world"
   end
 end
@@ -38,6 +39,7 @@ class TestService < Karibu::Service
     arg 'c', type: Integer, desc: "number of stripes"
     returns "string containing hello word", String
   end
+  response_timeout 5
 end
 
 

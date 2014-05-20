@@ -27,7 +27,7 @@ module Karibu
     private
 
     def check_msg
-      raise BadMessageFormat if @msg.size != 5
+      raise BadRequestError if @msg.size != 5
       check_type
       check_id
       check_resource
@@ -36,23 +36,23 @@ module Karibu
     end
 
     def check_type
-      raise Karibu::Errors::BadMessageFormat unless (@msg[0].is_a?(Fixnum) && @msg[0] == 0)
+      raise Karibu::Errors::BadRequestError unless (@msg[0].is_a?(Fixnum) && @msg[0] == 0)
     end
 
     def check_id
-      raise Karibu::Errors::BadMessageFormat unless @msg[1].is_a? String
+      raise Karibu::Errors::BadRequestError unless @msg[1].is_a? String
     end
 
     def check_resource
-      raise Karibu::Errors::BadMessageFormat unless @msg[2].is_a? String
+      raise Karibu::Errors::BadRequestError unless @msg[2].is_a? String
     end
 
     def check_method
-      raise Karibu::Errors::BadMessageFormat unless @msg[3].is_a? ::String
+      raise Karibu::Errors::BadRequestError unless @msg[3].is_a? ::String
     end
 
     def check_params
-      raise Karibu::Errors::BadMessageFormat unless @msg[4].is_a? ::Array
+      raise Karibu::Errors::BadRequestError unless @msg[4].is_a? ::Array
     end
   end
   

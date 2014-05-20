@@ -2,8 +2,9 @@ module Karibu
   class Server
     include ::Celluloid
 
-    def initialize(address, routes, numberofthreads)
+    def initialize(address, routes, numberofthreads, options)
       @logger = Karibu::Logger.new()
+      @options = options
       @routes = routes
       @address = address
       @workers_url = "inproc://karibu_server"
@@ -15,7 +16,7 @@ module Karibu
     def run
       @logger.async.info "server started on #{@address} with #{@numberofthreads} threads"
       Celluloid::Actor[:queue].async.run
-      pool = Karibu::Dispatcher.pool(size: @numberofthreads, args: [@ctx, @workers_url, @routes])
+      pool = Karibu::Dispatcher.pool(size: @numberofthreads, args: [@ctx, @workers_url, @routes, @options[:timeout]])
       @numberofthreads.times { pool.async.run}
     end
 

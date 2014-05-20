@@ -38,12 +38,19 @@ module Karibu
         xaddr = @addr
         anon_class = Class.new do
           define_singleton_method(:method_missing) do |method_name, *args|
-            request = Karibu::ClientRequest.new(kl.to_s, method_name.to_s, args)
-            requester = Karibu::Requester.new(xaddr)
-            response = requester.call_rpc(request.encode())
-            result = Karibu::ClientResponse.new(response).decode
-            raise result.error unless result.error.nil?
-            result.result
+            # begin
+              request = Karibu::ClientRequest.new(kl.to_s, method_name.to_s, args)
+              requester = Karibu::Requester.new(xaddr)
+              response = requester.call_rpc(request.encode())
+              result = Karibu::ClientResponse.new(response).decode
+              unless result.error.nil?
+                raise Karibu::Errors.const_get(result.error['klass']).new(result.error['msg'])
+              else 
+                result.result
+              end
+            # rescue => e
+            #   raise Karibu::Errors::ClientError.new(e.to_s)
+            # end
           end
         end
         klass = const_set(kl, anon_class)
