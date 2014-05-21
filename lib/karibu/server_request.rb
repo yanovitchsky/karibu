@@ -6,7 +6,7 @@ module Karibu
     end
 
     def decode
-      @msg = MessagePack.unpack(@packet)
+      @msg = MessagePack.unpack(@packet, :symbolize_keys => true, :encoding => Encoding::UTF_8)
       check_msg()
       [:type=, :uniq_id=, :resource=, :method_called=, :params=].each_with_index do |meth, index|
         self.send(meth, @msg[index])
