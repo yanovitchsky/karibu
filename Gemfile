@@ -5,4 +5,4 @@ gemspec
 
 
 gem 'msgpack-jruby', :require => 'msgpack', :platforms => :jruby 
-gem 'msgpack', :require => 'msgpack', :platforms => :ruby 
+# gem 'msgpack', :require => 'msgpack', :platforms => :ruby 
