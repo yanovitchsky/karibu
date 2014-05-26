@@ -38,7 +38,7 @@ module Karibu
     end
 
     def decode
-      msg = MessagePack.unpack(@packet)
+      msg = MessagePack.unpack(@packet, :symbolize_keys => true, :encoding => Encoding::UTF_8)
       [:type=, :id=, :error=, :result=].each_with_index do |meth, index|
         self.send(meth, msg[index])
       end

@@ -6,6 +6,7 @@ module Karibu
     ERRORS=[
       ArgumentError,
       BadRequestError,
+      CustomError,
       MethodNotFoundError,
       ServiceResourceNotFoundError,
       TimeoutError,

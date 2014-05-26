@@ -44,7 +44,7 @@ module Karibu
               response = requester.call_rpc(request.encode())
               result = Karibu::ClientResponse.new(response).decode
               unless result.error.nil?
-                raise Karibu::Errors.const_get(result.error['klass']).new(result.error['msg'])
+                raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
               else 
                 result.result
               end

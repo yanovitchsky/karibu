@@ -10,6 +10,8 @@ module Karibu
 
     class BadRequestError < Error;end
 
+    class CustomError < Error;end
+    
     class ClientError < Error;end
 
     class MethodNotFoundError < Error;end
