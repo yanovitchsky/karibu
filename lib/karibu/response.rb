@@ -10,7 +10,7 @@ module Karibu
     end
 
     def encode
-      MessagePack.pack([@type, @id, @error, @result])
+      res = MessagePack.pack([@type, @id, @error, @result])
     end
 
     # def decode

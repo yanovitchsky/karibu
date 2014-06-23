@@ -7,11 +7,11 @@
 
 - hash with indefferent access for params
 - define a class and expose class public method a la rails (a verifier)
-- timeout for request
 - add a circut breaker
 - trapping exit
 - investigate nesty error gem
 - add exception handler proc
+- ensure messagepack packs only primitive data type and not object(makes server crash)
 
 # CLIENT
 - check client async

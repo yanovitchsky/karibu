@@ -15,12 +15,11 @@ module Karibu
           the_klass = Kernel.const_get(klass)
           the_meth = meth.to_sym
           check_route(the_klass, the_meth)
-          @routes[the_klass] = the_meth
+          (@routes[the_klass] ||= []) << the_meth
           if block_given?
             doc = Karibu::Doc.new(route_string, &block)
           end
         rescue NameError => e
-          p e
           raise Karibu::Errors::ServiceResourceNotFoundError
         end
       end

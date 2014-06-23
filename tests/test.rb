@@ -178,11 +178,16 @@ addr = "tcp://127.0.0.1:8900"
 # 10.times do |x|
 #   threads << Thread.new {p "thread #{x} ===>"; p MessageService::Message.echo}
 # end
-class MessageService < Karibu::Client
-  connection_string "tcp://127.0.0.1:8900"
+# class MessageService < Karibu::Client
+#   connection_string "tcp://127.0.0.1:8900"
+# end
+
+class ProspectService < Karibu::Client
+  connection_string "tcp://127.0.0.1:6000"
 end
-# threads.each{|t| t.join }
-p MessageService::Message.echo
+ p ProspectService::ProspectsResource.all("1")
+# # threads.each{|t| t.join }
+# p MessageService::Message.echo
 # p MessageService::Message.echo
 # p MessageService::Message.echo
 # p MessageService::Message.hello

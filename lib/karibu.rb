@@ -14,7 +14,7 @@ require "karibu/version"
 require "karibu/doc"
 require "karibu/errors"
 require "karibu/error_handler"
-require "Karibu/logger"
+require "karibu/logger"
 require "karibu/server_request"
 require "karibu/client_request"
 require "karibu/response"
@@ -27,5 +27,6 @@ require "karibu/service"
 module Karibu
   # Your code goes here...
   LOGFILE = "karibu.log"
+  ENTRY_POINT = nil
   # trap("INT") { puts "Shutting down."; exit}
 end

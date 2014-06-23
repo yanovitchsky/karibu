@@ -43,6 +43,7 @@ module Karibu
               requester = Karibu::Requester.new(xaddr)
               response = requester.call_rpc(request.encode())
               result = Karibu::ClientResponse.new(response).decode
+              p "type #{result.type}"
               unless result.error.nil?
                 raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
               else 

@@ -11,6 +11,12 @@ module Karibu
     end
 
     def process_request(msg)
+      # p ENV['KARIBU_ENV']
+      # if ENV['KARIBU_ENV'] == 'development' && Karibu::ENTRY_POINT != nil
+      #   p Karibu::ENTRY_POINT
+      #   load(Karibu::ENTRY_POINT)
+      #   p "reloading....."
+      # end
       begin_t = Time.now
       request = Karibu::ServerRequest.new(msg).decode()
       @logger.async.info request.to_s
@@ -18,7 +24,7 @@ module Karibu
         Timeout::timeout(@timeout){
           response = exec_request(request)
           @logger.async.info "#{response.to_s} in #{Time.now - begin_t}"
-          response
+          response.encode()
         }
       rescue => e
         begin
@@ -29,7 +35,7 @@ module Karibu
           error = {klass: e.class.to_s.split('::').last, msg: e.to_s}
           response = Karibu::ServerResponse.new(1, request.uniq_id, error, nil)
           @logger.async.error "#{response.to_s} in #{Time.now - begin_t}"
-          return response
+          return response.encode()
         end
       end
     end
@@ -48,14 +54,14 @@ module Karibu
         @socket.recv_string(buff)
         t = Time.now
         response = process_request(buff)
-        @socket.send_string(response.encode(), 0)
+        @socket.send_string(response, 0)
       end
     end
 
     private
     def check_route(klass, meth)
       raise Karibu::Errors::ServiceResourceNotFoundError.new("#{klass} does not exist") unless @routes.has_key?(klass)
-      raise Karibu::Errors::MethodNotFoundError.new("resource #{klass} has no method #{meth}") unless @routes[klass] == meth
+      raise Karibu::Errors::MethodNotFoundError.new("resource #{klass} has no method #{meth}") unless @routes[klass].include? meth
     end
   end
 end
