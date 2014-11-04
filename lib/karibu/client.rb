@@ -94,7 +94,7 @@ module Karibu
           result = Karibu::ClientResponse.new(response).decode
           unless result.error.nil?
             raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
-          else 
+          else
             result.result
           end
         rescue Timeout::Error => e
