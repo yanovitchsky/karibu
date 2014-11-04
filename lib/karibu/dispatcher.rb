@@ -22,6 +22,7 @@ module Karibu
         }
       rescue => e
         begin
+          @logger.async.error(e)
           server_exception = Karibu::ErrorHandler.new(e) # find karibu error based on execution error
           raise server_exception.error
         rescue => e

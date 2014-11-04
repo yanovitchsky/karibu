@@ -178,11 +178,115 @@ addr = "tcp://127.0.0.1:8900"
 # 10.times do |x|
 #   threads << Thread.new {p "thread #{x} ===>"; p MessageService::Message.echo}
 # end
-class MessageService < Karibu::Client
-  connection_string "tcp://127.0.0.1:8900"
+# class MessageService < Karibu::Client
+#   connection_string "tcp://127.0.0.1:8900"
+#   timeout 60
+# end
+
+class ProspectService < Karibu::Client
+  # connection_string "tcp://192.168.10.131:6000"
+  connection_string "tcp://127.0.0.1:6000"
 end
+
+prospect_id = "53a1a4bf504cdbe33d000001" 
+cms_site_id = "537c7eecba946a31e3000033" 
+
+
+iter = 100
+arr = []
+iter.times do |i|
+  # arr << Thread.new do
+    ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
+  # end
+  p i
+end
+# 20.times{puts " "}
+# ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
+
+
+# arr.each{|x| x.join}
+# Thread.join()
+# Celluloid::Future.new do
+#   prospect_id = "53f35161ba946aedd5000001"
+#   cms_site_id = "53f30b33ba946a1d7400000e"
+#   ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
+# end
+
+# iterations = 100
+# prospect_id = "53f35161ba946aedd5000001"
+# cms_site_id = "53f30b33ba946a1d7400000e"
+
+# res1  = {}
+# res2  = {}
+
+# Benchmark.bm do |bm|
+#   # sync
+#   bm.report do
+#     iterations.times do |i|
+#       p i
+#       res1[i] = ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
+#     end
+#   end
+
+  #async
+  # bm.report do
+  #   iterations.times do
+  #     arr = []
+  #     arr << Celluloid::Future.new do
+  #       ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
+  #     end
+  #     arr.each_with_index {|x, i| res2[i] =  x.value}
+  #   end
+  # end
+# end
+
 # threads.each{|t| t.join }
-p MessageService::Message.echo
+
+# iter = 10_000
+# # Benchmark.TESTS = 10_000
+
+# Benchmark.bm do |results|
+#   results.report do
+#     arr = []
+#     iter.times do |i|
+#       arr << MessageService::Message.echo
+#     end
+#     arr.each_with_index do |x, i|
+#       p "message[#{i}] ==> #{x}"
+#     end
+#   end
+# end
+
+# Benchmark.bm do |results|
+#   results.report do
+#     arr = []
+#     iter.times do |i|
+#       arr << Celluloid::Future.new do
+#         mess = MessageService::Message.echo
+#       end
+#     end
+#     arr.each_with_index do |x, i|
+#       p "message[#{i}] ==> #{x.value}"
+#     end
+#   end
+# end
+# end
+# arr = []
+# iter.times do |i|
+#   arr << Celluloid::Future.new do
+#     mess = MessageService::Message.echo
+#   end
+# end
+
+# arr.each_with_index do |x, i|
+#   p "message[#{i}] ==> #{x.value}"
+# end
+
+# MessageService::Message.echo
+# MessageService::Message.echo
+# MessageService::Message.echo
+
+# p MessageService::Message.echo
 # p MessageService::Message.echo
 # p MessageService::Message.echo
 # p MessageService::Message.hello

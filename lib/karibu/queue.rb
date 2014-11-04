@@ -24,3 +24,6 @@ module Karibu
     end
   end
 end
+
+# XREP ==> ROUTER
+# XREQ ==> DEALER

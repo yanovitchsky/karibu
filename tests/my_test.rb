@@ -19,7 +19,7 @@ end
 class Message
 
   def self.echo
-    sleep(15)
+    # sleep(60)
     "hello world"
   end
 end
@@ -31,6 +31,7 @@ end
 
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
+  threads 20
   # expose 'Message#echo'
   expose 'Documentation#call'
   expose 'Message#echo' do
@@ -39,7 +40,7 @@ class TestService < Karibu::Service
     arg 'c', type: Integer, desc: "number of stripes"
     returns "string containing hello word", String
   end
-  response_timeout 5
+  # response_timeout 40
 end
 
 
