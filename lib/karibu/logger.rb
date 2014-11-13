@@ -8,9 +8,14 @@ module Karibu
 
     def initialize(name='karibu-logger')
       @logger = ::Log4r::Logger.new(name)
-      format = ::Log4r::PatternFormatter.new(pattern: "[%l] %d => %m")
-      @logger.outputters << ::Log4r::StdoutOutputter.new("#{name}-console", formatter: format)
-      @logger.outputters << ::Log4r::FileOutputter.new("#{name}-file", filename: (Karibu::LOGFILE || "#{name}.log"), formatter: format)
+      @pattern = ::Log4r::PatternFormatter.new(pattern: "[%l] %d => %m")
+      @logger.outputters << ::Log4r::StdoutOutputter.new("#{name}-console", formatter: @pattern)
+      @logger.outputters << ::Log4r::FileOutputter.new("#{name}-file", filename: (Karibu::LOGFILE || "#{name}.log"), formatter: @pattern)
     end
+
+    def pattern format
+      @logger.outputters.each {|outputter| outputter.formatter = format}
+    end
+
   end
 end

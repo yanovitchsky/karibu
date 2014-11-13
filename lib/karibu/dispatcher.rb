@@ -6,7 +6,7 @@ module Karibu
       @routes = routes
       @socket = ctx.socket(::ZMQ::REP)
       @socket.connect(url)
-      @logger = Karibu::Logger.new
+      # Karibu::LOGGER = Karibu::Logger.new
       @timeout = options[:timeout]
       @app = options[:app]
     end
@@ -14,24 +14,24 @@ module Karibu
     def process_request(msg)
       begin_t = Time.now
       request = Karibu::ServerRequest.new(msg).decode()
-      @logger.async.info request.to_s
+      Karibu::LOGGER.async.info request.to_s
       begin
         Timeout::timeout(@timeout){
           response = exec_request(request)
           # response = @app.call(request)
-          @logger.async.info "#{response.to_s} in #{Time.now - begin_t}"
+          Karibu::LOGGER.async.info "#{response.to_s} in #{Time.now - begin_t}"
           response
         }
       rescue => e
         begin
-          @logger.async.error(e)
+          Karibu::LOGGER.async.error(e)
           server_exception = Karibu::ErrorHandler.new(e) # find karibu error based on execution error
           raise server_exception.error
         rescue => e
           # rescue and send error to client based on name
           error = {klass: e.class.to_s.split('::').last, msg: e.to_s}
           response = Karibu::ServerResponse.new(1, request.uniq_id, error, nil)
-          @logger.async.error "#{response.to_s} in #{Time.now - begin_t}"
+          Karibu::LOGGER.async.error "#{response.to_s} in #{Time.now - begin_t}"
           return response
         end
       end
