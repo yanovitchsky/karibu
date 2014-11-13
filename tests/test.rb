@@ -178,28 +178,28 @@ addr = "tcp://127.0.0.1:8900"
 # 10.times do |x|
 #   threads << Thread.new {p "thread #{x} ===>"; p MessageService::Message.echo}
 # end
-# class MessageService < Karibu::Client
-#   connection_string "tcp://127.0.0.1:8900"
-#   timeout 60
+class MessageService < Karibu::Client
+  connection_string "tcp://127.0.0.1:8900"
+  timeout 60
+end
+
+# class ProspectService < Karibu::Client
+#   # connection_string "tcp://192.168.10.131:6000"
+#   connection_string "tcp://127.0.0.1:6000"
 # end
 
-class ProspectService < Karibu::Client
-  # connection_string "tcp://192.168.10.131:6000"
-  connection_string "tcp://127.0.0.1:6000"
-end
-
-prospect_id = "53a1a4bf504cdbe33d000001" 
-cms_site_id = "537c7eecba946a31e3000033" 
+# prospect_id = "53a1a4bf504cdbe33d000001" 
+# cms_site_id = "537c7eecba946a31e3000033" 
 
 
-iter = 100
-arr = []
-iter.times do |i|
-  # arr << Thread.new do
-    ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
-  # end
-  p i
-end
+# iter = 100
+# arr = []
+# iter.times do |i|
+#   # arr << Thread.new do
+#     ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
+#   # end
+#   p i
+# end
 # 20.times{puts " "}
 # ProspectService::DeliveriesResource.all(prospect_id, cms_site_id)
 
@@ -282,7 +282,7 @@ end
 #   p "message[#{i}] ==> #{x.value}"
 # end
 
-# MessageService::Message.echo
+p MessageService::Message.echo
 # MessageService::Message.echo
 # MessageService::Message.echo
 

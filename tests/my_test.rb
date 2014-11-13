@@ -28,6 +28,17 @@ end
 #   desc 'permits name for someone'
 #   arg 'x', type: String, desc: "name of string"
 # end
+class Middleware
+  def initialize(app)
+    @app = app
+  end
+
+  def call(request)
+    puts "je suis dans mon middleware"
+    response = @app.call(request)
+    {sucess: response}
+  end
+end
 
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
@@ -40,11 +51,12 @@ class TestService < Karibu::Service
     arg 'c', type: Integer, desc: "number of stripes"
     returns "string containing hello word", String
   end
+  use Middleware
   # response_timeout 40
 end
 
 
-p Documentation.call
+# p Documentation.call
 #Message.echo(x:String) # "permits name for someone", x:String(name of string)
 # class Client
 #   include Celluloid::ZMQ
