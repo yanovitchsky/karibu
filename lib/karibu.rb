@@ -27,7 +27,7 @@ require "karibu/service"
 
 module Karibu
   # Your code goes here...
-  LOGFILE = "karibu.log"
-  LOGGER = Karibu::Logger.new()
+  # LOGFILE = "test1"
+  # LOGGER = nil
   # trap("INT") { puts "Shutting down."; exit}
 end

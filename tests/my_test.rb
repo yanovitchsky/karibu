@@ -4,17 +4,17 @@ require File.expand_path('../../lib/karibu', __FILE__)
 
 addr = "tcp://127.0.0.1:8900"
 
-class Documentation
-  #
-  # returns documentations for services
-  #
-  #
-  # @return [String] formatted doc string
-  # 
-  def self.call
-    Karibu::Doc.serve_doc
-  end
-end
+# class Documentation
+#   #
+#   # returns documentations for services
+#   #
+#   #
+#   # @return [String] formatted doc string
+#   # 
+#   def self.call
+#     Karibu::Doc.serve_doc
+#   end
+# end
 
 class Message
 
@@ -40,17 +40,20 @@ class Middleware
   end
 end
 
+p "setting log file ------------------------"
+Karibu::LOGFILE = "test.log"
+
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
   threads 20
-  # expose 'Message#echo'
-  expose 'Documentation#call'
-  expose 'Message#echo' do
-    desc 'permits name for someone'
-    arg 'x', type: String, desc: "name of string"
-    arg 'c', type: Integer, desc: "number of stripes"
-    returns "string containing hello word", String
-  end
+  expose 'Message#echo'
+  # expose 'Documentation#call'
+  # expose 'Message#echo' do
+  #   desc 'permits name for someone'
+  #   arg 'x', type: String, desc: "name of string"
+  #   arg 'c', type: Integer, desc: "number of stripes"
+  #   returns "string containing hello word", String
+  # end
   use Middleware
   # response_timeout 40
 end

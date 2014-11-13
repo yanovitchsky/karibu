@@ -6,7 +6,9 @@ module Karibu
     attr_accessor :logger
     def_delegators :logger, :level, :debug, :info, :warn, :error, :fatal
 
-    def initialize(name='karibu-logger')
+    def initialize(name='karibu')
+      puts "============================"
+      p Karibu::LOGFILE
       @logger = ::Log4r::Logger.new(name)
       @pattern = ::Log4r::PatternFormatter.new(pattern: "[%l] %d => %m")
       @logger.outputters << ::Log4r::StdoutOutputter.new("#{name}-console", formatter: @pattern)

@@ -38,6 +38,7 @@ module Karibu
       def start
         raise "You should define a connection_string" if @addr.nil?
         Celluloid::ZMQ.init
+        Karibu::LOGGER ||= Karibu::Logger.new()
         @routes.freeze
         app = init_middlewares
         self.new(app)
