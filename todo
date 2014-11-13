@@ -1,6 +1,6 @@
 # SERVER
 - Extension for log (Add more logs)
-- Extension for metrics
+- Extension for metrics (done)
 - Checks for requests
 - Write test for classes
 - Make server more robust to crash (celluloid supervised and linking) (done but should be put to the test)

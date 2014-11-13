@@ -2,12 +2,13 @@ module Karibu
   class Dispatcher
     include ::Celluloid
 
-    def initialize(ctx, url, routes, timeout)
+    def initialize(ctx, url, routes, options)
       @routes = routes
       @socket = ctx.socket(::ZMQ::REP)
       @socket.connect(url)
       @logger = Karibu::Logger.new
-      @timeout = timeout
+      @timeout = options[:timeout]
+      @app = options[:app]
     end
 
     def process_request(msg)
@@ -17,6 +18,7 @@ module Karibu
       begin
         Timeout::timeout(@timeout){
           response = exec_request(request)
+          # response = @app.call(request)
           @logger.async.info "#{response.to_s} in #{Time.now - begin_t}"
           response
         }
@@ -39,8 +41,9 @@ module Karibu
       klass = Kernel.const_get(request.resource)
       meth = request.method_called.to_sym
       check_route(klass, meth)
-      result = klass.send(meth, *request.params)
-      response = Karibu::ServerResponse.new(1, request.uniq_id, nil, result)
+      result = @app.call(request)
+      # result = klass.send(meth, *request.params)
+      Karibu::ServerResponse.new(1, request.uniq_id, nil, result)
     end
 
     def run

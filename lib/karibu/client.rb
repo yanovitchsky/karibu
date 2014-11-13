@@ -90,8 +90,16 @@ module Karibu
         begin
           request = Karibu::ClientRequest.new(klass.to_s, method_name.to_s, args)
           requester = Karibu::Requester.new(xaddr, timeout)
+          # time = Time.now
           response = requester.call_rpc(request.encode())
+          # p "TIME TAKEN FOR NETWORK---------------"
+          # p "#{(Time.now - time) * 1000}"
+          # p "--------------------------"
+          # time = Time.now
           result = Karibu::ClientResponse.new(response).decode
+          # p "TIME TAKEN FOR DECODING ---------------"
+          # p "#{(Time.now - time) * 1000}"
+          # p "--------------------------"
           unless result.error.nil?
             raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
           else
@@ -109,64 +117,12 @@ module Karibu
         timeout = @timeout
         anon_class = Class.new do
           define_singleton_method(:method_missing) do |method_name, *args|
-            Karibu::Client.execute(xaddr, timeout, kl.to_s, method_name, args)
+            resp = Karibu::Client.execute(xaddr, timeout, kl.to_s, method_name, args)
+            resp
           end
         end
         klass = const_set(kl, anon_class)
       end
-
-      # def const_missing(klass)
-      #   puts "in const missing"
-      #   raise "You should define a connection_string" if @addr.nil?
-      #   xaddr = @addr
-      #   timeout = @timeout
-      #   new_klass = Class.new do
-      #     def self.create_method(method_name, *args)
-      #       p "creating method #{method_name}"
-      #       self.define_singleton_method(method_name) do |*args|
-      #         begin
-      #           request = Karibu::ClientRequest.new(klass.to_s, method_name.to_s, args)
-      #           requester = Karibu::Requester.new(xaddr, timeout)
-      #           response = requester.call_rpc(request.encode())
-      #           result = Karibu::ClientResponse.new(response).decode
-      #           unless result.error.nil?
-      #             raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
-      #           else 
-      #             result.result
-      #           end
-      #         rescue Timeout::Error => e
-      #           raise Karibu::Errors::TimeoutError.new("request has timeout. Cannot reach server")
-      #         end
-      #       end
-      #       self.send(method_name, *args)
-      #     end
-      #     def self.method_missing(method_name, *args)
-      #       p "method #{method_name} is missing"
-      #       self.create_method(method_name, args)
-      #     end
-      #   end
-
-          # define_singleton_method(:method_missing) do |method_name, *args|
-          #   self.define_method(method_name, *args) do
-          #     p "defining #{method_name}"
-          #   end
-            # begin
-            #   request = Karibu::ClientRequest.new(kl.to_s, method_name.to_s, args)
-            #   requester = Karibu::Requester.new(xaddr, timeout)
-            #   response = requester.call_rpc(request.encode())
-            #   result = Karibu::ClientResponse.new(response).decode
-            #   unless result.error.nil?
-            #     raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
-            #   else 
-            #     result.result
-            #   end
-            # rescue Timeout::Error => e
-            #   raise Karibu::Errors::TimeoutError.new("request has timeout. Cannot reach server")
-            # end
-          # end
-        # end
-      #   self.const_set(klass, new_klass)
-      # end
     end
   end
 end

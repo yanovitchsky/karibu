@@ -3,7 +3,7 @@ module Karibu
     include ::Celluloid
     #class
     class << self
-      attr_accessor :addr, :routes, :server, :numberofthreads, :options, :timeout
+      attr_accessor :addr, :routes, :server, :numberofthreads, :options, :timeout, :middleware
       def connection_string cs
         @addr = cs
       end
@@ -39,7 +39,18 @@ module Karibu
         raise "You should define a connection_string" if @addr.nil?
         Celluloid::ZMQ.init
         @routes.freeze
-        self.new()
+        app = init_middlewares
+        self.new(app)
+      end
+
+      def use name, *args, &block
+        # @middlewares ||= []
+        # @middlewares.unshift [name, *args, &block]
+        # p "IN USE ------------"
+        # p "#{@middlewares}"
+        # @middlewares = @middlewares.uniq
+        @middlewares ||= []
+        @middlewares << Proc.new{|app| name.new(app, *args, &block)}
       end
 
 
@@ -52,38 +63,48 @@ module Karibu
       def init_options
         @options ||= {}
       end
+
+      def init_middlewares
+        app = Karibu::Executor.new()
+        @middlewares ||= []
+        @middlewares.each do |middleware|
+          app = middleware.call(app)
+        end
+        app
+      end
+
     end
 
     # instance 
     # attention on a besoin de l'id de la requete avant de l'envoyer mode zmq async
 
 
-    def initialize
-      options = {}
+    def initialize(app)
+      options = {app: app}
       numberofthreads = self.class.numberofthreads || 10
       options[:timeout] = self.class.timeout || 60
       @server = Karibu::Server.new(self.class.addr, self.class.routes, numberofthreads, options)
       @server.async.run
     end
 
-    def dispatch(request)
-      begin
-        p "request in dispatch is #{request}"
-        klass = Kernel.const_get(request.resource.capitalize)
-        p klass
-        meth = request.method_called.to_sym
-        result = klass.send(meth, *request.params)
-        response = Karibu::Response.new(request.identity, 1, request.uniq_id, nil, [result])
-        @server.send_to_client(response)
-      rescue NameError => e
+    # def dispatch(request)
+    #   begin
+    #     p "request in dispatch is #{request}"
+    #     klass = Kernel.const_get(request.resource.capitalize)
+    #     p klass
+    #     meth = request.method_called.to_sym
+    #     result = klass.send(meth, *request.params)
+    #     response = Karibu::Response.new(request.identity, 1, request.uniq_id, nil, [result])
+    #     @server.send_to_client(response)
+    #   rescue NameError => e
 
-      rescue Karibu::Errors::ServiceResourceNotFoundError => e
+    #   rescue Karibu::Errors::ServiceResourceNotFoundError => e
 
-      rescue Karibu::Errors::MethodNotFoundError => e
+    #   rescue Karibu::Errors::MethodNotFoundError => e
 
-      rescue Error => e
+    #   rescue Error => e
         
-      end
-    end
+    #   end
+    # end
   end
 end
