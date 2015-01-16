@@ -24,7 +24,7 @@ module Karibu
         }
       rescue => e
         begin
-          Karibu::LOGGER.async.error(e)
+          print_backtrace(e) if KARIBU_ENV == 'development'
           server_exception = Karibu::ErrorHandler.new(e) # find karibu error based on execution error
           raise server_exception.error
         rescue => e
@@ -59,7 +59,11 @@ module Karibu
     private
     def check_route(klass, meth)
       raise Karibu::Errors::ServiceResourceNotFoundError.new("#{klass} does not exist") unless @routes.has_key?(klass)
-      raise Karibu::Errors::MethodNotFoundError.new("resource #{klass} has no method #{meth}") unless @routes[klass] == meth
+      raise Karibu::Errors::MethodNotFoundError.new("resource #{klass} has no method #{meth}") unless @routes[klass].include? meth
+    end
+
+    def print_backtrace e
+      $stderr.puts (e.backtrace * "\n")      
     end
   end
 end

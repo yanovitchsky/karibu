@@ -8,27 +8,25 @@ module Karibu
         @addr = cs
       end
 
-      def expose route_string, &block
+      def expose route_string
         begin
           @routes ||= {}
           klass, meth = route_string.split('#')
           the_klass = Kernel.const_get(klass)
           the_meth = meth.to_sym
           check_route(the_klass, the_meth)
-          @routes[the_klass] = the_meth
-          if block_given?
-            doc = Karibu::Doc.new(route_string, &block)
+          unless @routes.has_key?(the_klass)
+            @routes[the_klass] = [the_meth]
+          else
+            @routes[the_klass] << the_meth
           end
-        rescue NameError => e
-          p e
-          raise Karibu::Errors::ServiceResourceNotFoundError
+        rescue Exception => e
+          raise Karibu::Errors::MethodNotFoundError
         end
       end
 
       def threads numberofthreads
-        # init_options
         @numberofthreads = (numberofthreads < 2) ? 2 : ( (numberofthreads > 100) ? 100 : numberofthreads )
-        # @options[:number_of_threads] = @numberofthreads 
       end
 
       def response_timeout timeout
@@ -44,11 +42,6 @@ module Karibu
       end
 
       def use name, *args, &block
-        # @middlewares ||= []
-        # @middlewares.unshift [name, *args, &block]
-        # p "IN USE ------------"
-        # p "#{@middlewares}"
-        # @middlewares = @middlewares.uniq
         @middlewares ||= []
         @middlewares << Proc.new{|app| name.new(app, *args, &block)}
       end
@@ -87,24 +80,5 @@ module Karibu
       @server.async.run
     end
 
-    # def dispatch(request)
-    #   begin
-    #     p "request in dispatch is #{request}"
-    #     klass = Kernel.const_get(request.resource.capitalize)
-    #     p klass
-    #     meth = request.method_called.to_sym
-    #     result = klass.send(meth, *request.params)
-    #     response = Karibu::Response.new(request.identity, 1, request.uniq_id, nil, [result])
-    #     @server.send_to_client(response)
-    #   rescue NameError => e
-
-    #   rescue Karibu::Errors::ServiceResourceNotFoundError => e
-
-    #   rescue Karibu::Errors::MethodNotFoundError => e
-
-    #   rescue Error => e
-        
-    #   end
-    # end
   end
 end

@@ -20,6 +20,7 @@ class Message
 
   def self.echo
     # sleep(60)
+    raise "test"
     "hello world"
   end
 end
