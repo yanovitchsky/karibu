@@ -178,7 +178,7 @@ addr = "tcp://127.0.0.1:8900"
 # 10.times do |x|
 #   threads << Thread.new {p "thread #{x} ===>"; p MessageService::Message.echo}
 # end
-class MessageService < Karibu::Client
+class Service < Karibu::Client
   connection_string "tcp://127.0.0.1:8900"
   timeout 60
 end
@@ -282,7 +282,7 @@ end
 #   p "message[#{i}] ==> #{x.value}"
 # end
 
-p MessageService::Message.echo
+p Service::TestController.hello_world
 # MessageService::Message.echo
 # MessageService::Message.echo
 

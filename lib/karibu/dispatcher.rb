@@ -24,7 +24,7 @@ module Karibu
         }
       rescue => e
         begin
-          print_backtrace(e) if KARIBU_ENV == 'development'
+          print_backtrace(e) if ENV['KARIBU_ENV'] == 'development'
           server_exception = Karibu::ErrorHandler.new(e) # find karibu error based on execution error
           raise server_exception.error
         rescue => e
