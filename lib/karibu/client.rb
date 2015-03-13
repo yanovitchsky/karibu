@@ -1,4 +1,5 @@
 require 'connection_pool'
+
 module Karibu
 
 
@@ -66,7 +67,7 @@ module Karibu
   class Client
     ## Class Method
     class << self
-      attr_accessor :addr, :instance, :timeout
+      attr_accessor :addr, :instance, :timeout, :namespaces
 
       def connection_string cs
         @addr = cs
@@ -80,6 +81,29 @@ module Karibu
       def timeout sec
         @timeout = sec 
         # TIMEOUT = sec
+      end
+
+      def endpoint namespace
+        root_class = self
+        root = self
+        modules = namespace.split("::")
+        # raise modules.inspect
+        last = modules.last 
+        modules.each do |cons|
+          unless const_defined?(cons)
+            cons_mod = Module.new do
+              @root = root_class
+            end
+            root.const_set cons, cons_mod
+            if cons == last
+              cons_mod.define_singleton_method(:method_missing) do |method_name, *args|
+                service_endpoint = self.to_s.split("#{@root}::").last
+                @root.call(service_endpoint, method_name, args)
+              end
+            end
+          end
+          root = root.const_get(cons)
+        end
       end
 
       def connect
@@ -110,19 +134,27 @@ module Karibu
         end
       end
 
-
-      def const_missing(kl)
-        raise "You should define a connection_string" if @addr.nil?
+      def call(mod, method_name, args)
         xaddr = @addr
         timeout = @timeout
-        anon_class = Class.new do
-          define_singleton_method(:method_missing) do |method_name, *args|
-            resp = Karibu::Client.execute(xaddr, timeout, kl.to_s, method_name, args)
-            resp
-          end
-        end
-        klass = const_set(kl, anon_class)
+        resp = Karibu::Client.execute(xaddr, timeout, mod.to_s, method_name, args)
+        resp  
       end
+
+
+      # def const_missing(kl)
+      #   raise kl.inspect
+      #   # raise "You should define a connection_string" if @addr.nil?
+      #   # xaddr = @addr
+      #   # timeout = @timeout
+      #   # anon_class = Class.new do
+      #   #   define_singleton_method(:method_missing) do |method_name, *args|
+      #   #     resp = Karibu::Client.execute(xaddr, timeout, kl.to_s, method_name, args)
+      #   #     resp
+      #   #   end
+      #   # end
+      #   # klass = const_set(kl, anon_class)
+      # end
     end
   end
 end

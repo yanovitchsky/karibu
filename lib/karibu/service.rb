@@ -3,7 +3,7 @@ module Karibu
     include ::Celluloid
     #class
     class << self
-      attr_accessor :addr, :routes, :server, :numberofthreads, :options, :timeout, :middleware
+      attr_accessor :addr, :routes, :server, :numberofthreads, :options, :timeout, :middleware, :__children__
       def connection_string cs
         @addr = cs
       end
@@ -44,6 +44,11 @@ module Karibu
       def use name, *args, &block
         @middlewares ||= []
         @middlewares << Proc.new{|app| name.new(app, *args, &block)}
+      end
+
+      def inherited(subclass)
+        @__children__ ||= []
+        @__children__ << subclass
       end
 
 

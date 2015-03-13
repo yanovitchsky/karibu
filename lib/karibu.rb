@@ -7,6 +7,7 @@ require 'msgpack'
 require "log4r"
 require "hamster"
 require 'timeout'
+require 'thor'
 # require 'msgpack' unless defined? JRUBY_VERSION
 # require "msgpack-jruby" if defined? JRUBY_VERSION
 # require 'concurrent'
@@ -24,10 +25,15 @@ require "karibu/dispatcher"
 require "karibu/server"
 require "karibu/client"
 require "karibu/service"
+require "karibu/cli"
 
 module Karibu
   # Your code goes here...
   # LOGFILE = "test1"
   LOGGER = Karibu::Logger.new()
   # trap("INT") { puts "Shutting down."; exit}
+  trap("INT") { 
+    puts "Shutting down."
+    system("kill -9 #{Process.pid}")
+  }
 end

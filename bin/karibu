@@ -1,3 +1,36 @@
 #!/usr/bin/env ruby
 
 require 'karibu'
+
+module Karibu
+  class BIN < ::Thor
+
+    desc "server", "Start a karibu server"
+    method_option :env,      aliases: "-e", desc: "environment KARIBU_ENV", default: "development"
+    method_option :bind,     aliases: "-b", desc: "server bind ip address", default: "127.0.0.1"
+    method_option :port,     aliases: "-p", desc: "server listening port",  default: 8900
+    method_option :thread,   aliases: "-t", desc: "server thread pool",     default: 10
+    method_option :deamon,   aliases: "-d", desc: "run in background",      default: false, type: :boolean
+    method_option :initfile,                desc: "service file",           default: "run.rb"
+    method_option :pidfile,                 desc: "file where to write pid"
+    def server
+      begin
+        server = ::Karibu::CLI.new(options_hash)
+        server.start  
+      rescue Exception => e
+        raise Thor::Error, e.message
+      end
+    end
+
+    private
+    def options_hash
+      hash = {}
+      [:env, :bind, :port, :thread, :deamon, :initfile, :pidfile].each do |opt|
+        hash[opt] = options[opt.to_s] if options.has_key?(opt.to_s) 
+      end
+      hash
+    end
+  end
+end
+
+Karibu::BIN.start

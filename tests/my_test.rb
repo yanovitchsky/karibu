@@ -40,12 +40,12 @@ class Middleware
   end
 end
 
-p "setting log file ------------------------"
-Karibu::LOGFILE = "test.log"
+# p "setting log file ------------------------"
+# Karibu::LOGFILE = "test.log"
 
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
-  threads 20
+  threads 2
   expose 'Message#echo'
   # expose 'Documentation#call'
   # expose 'Message#echo' do
@@ -97,7 +97,7 @@ end
 
 
 
-TestService.start()
+# TestService.start()
 
-sleep
+# sleep
 
