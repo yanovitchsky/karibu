@@ -10,9 +10,9 @@ module Karibu
     method_option :bind,     aliases: "-b", desc: "server bind ip address", default: "127.0.0.1"
     method_option :port,     aliases: "-p", desc: "server listening port",  default: 8900
     method_option :thread,   aliases: "-t", desc: "server thread pool",     default: 10
-    method_option :deamon,   aliases: "-d", desc: "run in background",      default: false, type: :boolean
+    method_option :daemon,   aliases: "-d", desc: "run in background",      default: false, type: :boolean
     method_option :initfile,                desc: "service file",           default: "run.rb"
-    method_option :pidfile,                 desc: "file where to write pid"
+    method_option :pidfile,                 desc: "file to save pid" ,      default: "pids/karibu.pid"
     def server
       begin
         server = ::Karibu::CLI.new(options_hash)
@@ -25,7 +25,7 @@ module Karibu
     private
     def options_hash
       hash = {}
-      [:env, :bind, :port, :thread, :deamon, :initfile, :pidfile].each do |opt|
+      [:env, :bind, :port, :thread, :daemon, :initfile, :pidfile].each do |opt|
         hash[opt] = options[opt.to_s] if options.has_key?(opt.to_s) 
       end
       hash

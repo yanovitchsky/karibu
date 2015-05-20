@@ -1,1 +1,1 @@
-rvm use 2.0.0@karibu --create
+rvm use ruby-2.0.0-p481@karibu --create

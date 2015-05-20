@@ -17,7 +17,7 @@ module Karibu
 
     def start
       begin
-        unless @options[:deamon]
+        unless @options[:daemon]
           @service.start
           sleep()
         else
@@ -50,7 +50,7 @@ module Karibu
         bind: "127.0.0.1",
         port:    8900,
         thread: 10,
-        deamon:  false,
+        daemon:  false,
         environment: "development",
         initfile: "run.rb",
         pidfile: "pids/karibu.pid"

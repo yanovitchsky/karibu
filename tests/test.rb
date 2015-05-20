@@ -181,12 +181,23 @@ addr = "tcp://127.0.0.1:8900"
 class Service < Karibu::Client
   connection_string "tcp://127.0.0.1:8900"
   timeout 60
-  # endpoint "Facebook::TestController"
-  endpoint "Message"
+  endpoint "Facebook::TestController"
+  # endpoint "Message"
 end
 
-p Service::Message.echo
-# p Service::Facebook::TestController.hello_world
+# p Service::Message.echo
+arr = []
+t = Time.now
+400.times do
+  arr << Thread.new { p Service::Facebook::TestController.hello_world }
+end
+arr.each{|x| x.join}
+p Time.now - t
+
+# Benchmark.TESTS = 10_000
+# Benchmark.bmbm do |results|
+#   results.report
+# end
 # class ProspectService < Karibu::Client
 #   # connection_string "tcp://192.168.10.131:6000"
 #   connection_string "tcp://127.0.0.1:6000"
