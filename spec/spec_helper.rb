@@ -13,6 +13,7 @@ require 'bundler/setup'
 require 'json'
 
 require 'celluloid/test'
+Celluloid.boot
 require File.expand_path('../../lib/karibu', __FILE__)
 
 
@@ -26,10 +27,15 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
-  # config.before(:each) do
-  #   Celluloid.shutdown; Celluloid.boot 
-  # end
+  config.before(:each) do
+    Celluloid.shutdown; Celluloid.boot
+  end
   # config.after(:each) do
+  #   Celluloid.shutdown
+  # end
+  # config.around actor_system: :global do |ex|
+  #   Celluloid.boot
+  #   ex.run
   #   Celluloid.shutdown
   # end
 end

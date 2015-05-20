@@ -1,43 +1,6 @@
 require 'connection_pool'
 
 module Karibu
-
-
-  # class ClientQueue
-  #   include Singleton
-  #   # attr_accessor :pool
-  #   # def initialize
-  #   #   # @pool = ::ConnectionPool.new(size: 1) { 
-  #   #     ctx = ::ZMQ::Context.new(1)
-  #   #     @socket = ctx.socket(::ZMQ::REQ)
-  #   #   # }
-  #   # end
-  #   # def execute(url, timeout, request)
-  #   #   # res = @pool.with do |socket|
-  #   #     p @socket
-  #   #     Timeout::timeout(timeout){
-  #   #       @socket.connect(url)
-  #   #       @socket.send_string(request, 0)
-  #   #       buff = ""
-  #   #       @socket.recv_string(buff)
-  #   #       @socket.close
-  #   #       return buff
-  #   #     }
-  #   #   # end
-  #   # end
-
-  #   def initialize(url)
-  #     backend_url = url
-  #     frontend_url = "inproc://karibu_client"
-  #     ctx = ::ZMQ::Context.new(1)
-  #     @queue = Karibu::Queue.new(ctx, frontend_url, backend_url, :server)
-  #   end
-
-  #   def execute(timeout, request)
-      
-  #   end
-  # end
-
   class Requester
     def initialize(url, timeout=nil)
       @timeout = timeout || 30

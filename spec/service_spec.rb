@@ -16,23 +16,26 @@ describe Karibu::Service do
     before do
       class Call
         def self.stats;end
+        def self.count;end
       end
       class Test < Karibu::Service
-        expose "call#stats"
+        expose "Call#stats"
+        expose "Call#count"
       end
     end
     context "when called" do
       it 'adds the route to Service.exposed_methods' do
+        # p Test.routes
         expect(Test.routes.size).to eq(1)
-        expect(Test.routes).to have_key(Call)  
-        expect(Test.routes[Call]).to eq(:stats)  
+        expect(Test.routes).to have_key(Call)
+        expect(Test.routes[Call].size).to eq(2)  
       end
     end
     context "when the route class does not exist" do
-      it {expect { Test.send(:expose, 'message#all') }.to raise_error(Karibu::Errors::ServiceResourceNotFound) }
-      it "raises MethodNotFound" do
+      it {expect { Test.send(:expose, 'Message#all') }.to raise_error(Karibu::Errors::MethodNotFoundError) }
+      it "raises MethodNotFoundError" do
         class Message;end
-        expect { Test.send(:expose, 'call#all') }.to raise_error(Karibu::Errors::MethodNotFound)
+        expect { Test.send(:expose, 'Call#all') }.to raise_error(Karibu::Errors::MethodNotFoundError)
       end
     end
   end

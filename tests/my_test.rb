@@ -17,10 +17,22 @@ addr = "tcp://127.0.0.1:8900"
 # end
 
 class Message
-
+  include Karibu::Helpers
+  
+  # params_for :echo do
+  #  optional :test, type: Integer 
+  # end
   def self.echo
     # sleep(60)
+    raise "test"
     "hello world"
+  end
+
+  # params_for :toto do
+
+  # end
+  def self.toto
+    
   end
 end
 

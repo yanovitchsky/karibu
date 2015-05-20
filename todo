@@ -4,14 +4,15 @@
 - Checks for requests
 - Write test for classes
 - Make server more robust to crash (celluloid supervised and linking) (done but should be put to the test)
-
+- Implement server caching
 - hash with indefferent access for params
-- define a class and expose class public method a la rails (a verifier)
-- timeout for request
+- define a class and expose class public method a la rails (a verifier) (done)
+- timeout for request(done)
 - add a circut breaker
 - trapping exit
 - investigate nesty error gem
 - add exception handler proc
+- add rake tasks for console
 
 # CLIENT
 - check client async
@@ -27,3 +28,8 @@
 
 - define transaction id
 - streaming method
+
+
+
+
+### binding

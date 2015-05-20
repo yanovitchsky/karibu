@@ -5,15 +5,18 @@ class TestClient < Karibu::Client
 end
 describe Karibu::Client do
   before do
-    ::ZMQ::Context.stub(:connect)
+    # ::ZMQ::Context.stub(:connect)
   end
   describe "#async" do
     it 'respond to async' do
       expect(TestClient::Message).to respond_to(:async)
     end
 
-    it 'respond to future' do
-      expect(TestClient::Message).to respond_to(:future)
-    end
+    it 'computes asynchronsly'
+
+    # it 'respond to future' do
+    #   TestClient::Message.future {"hello world"}
+    #   expect(TestClient::Message).to respond_to(:future)
+    # end
   end
 end

@@ -26,10 +26,12 @@ require "karibu/server"
 require "karibu/client"
 require "karibu/service"
 require "karibu/cli"
+require "karibu/controller"
 
 module Karibu
   # Your code goes here...
   # LOGFILE = "test1"
+  KARIBU_ENV = ENV['KARIBU_ENV'] || 'development'
   LOGGER = Karibu::Logger.new()
   # trap("INT") { puts "Shutting down."; exit}
   trap("INT") { 
