@@ -26,7 +26,7 @@ require "karibu/server"
 require "karibu/client"
 require "karibu/service"
 require "karibu/cli"
-require "karibu/controller"
+require "karibu/helpers"
 
 module Karibu
   # Your code goes here...

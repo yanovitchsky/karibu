@@ -1,5 +1,5 @@
 module Karibu
-  module Controller
+  module Helpers
     module ClassMethods
       attr_accessor :__filters__
       def before_filter(filter_method, *methods_to_filter)

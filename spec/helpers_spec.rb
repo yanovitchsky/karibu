@@ -1,10 +1,10 @@
 require "spec_helper"
 
 # class App
-#   include Karibu::Controller
+#   include Karibu::Helpers
 # end
 
-describe Karibu::Controller do
+describe Karibu::Helpers do
 
 
   # describe "#m_execute" do
@@ -17,7 +17,7 @@ describe Karibu::Controller do
   describe "#invoke" do
     let(:app){
       class App
-        include Karibu::Controller
+        include Karibu::Helpers
       end
     }
     context "when option is not valid" do
@@ -39,7 +39,7 @@ describe Karibu::Controller do
     context "when options method does not exist" do
       let(:myapp){
         class Application
-          include Karibu::Controller
+          include Karibu::Helpers
         end
       }
       before do
@@ -68,7 +68,7 @@ describe Karibu::Controller do
     context "when invoking with valid params" do
       before do
         @klass = Class.new do
-          include Karibu::Controller
+          include Karibu::Helpers
 
           def self.print_name
             puts "Yann Akoun"
