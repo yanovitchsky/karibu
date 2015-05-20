@@ -38,7 +38,7 @@ module Karibu
     end
 
     def exec_request(request)
-      klass = Kernel.const_get(request.resource)
+      klass = request.resource.classify.constantize
       meth = request.method_called.to_sym
       check_route(klass, meth)
       result = @app.call(request)
