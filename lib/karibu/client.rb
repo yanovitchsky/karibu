@@ -7,7 +7,7 @@ module Karibu
       @url = url
       @ctx = ::ZMQ::Context.new(1)
       @socket = @ctx.socket(::ZMQ::REQ)
-      @socker
+      # @socker
       @socket.connect(url)
     end
 

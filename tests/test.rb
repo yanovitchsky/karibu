@@ -5,6 +5,7 @@
 # require File.expand_path('../request', __FILE__)
 require 'benchmark'
 require 'net/http'
+require 'redis'
 require File.expand_path('../../lib/karibu/', __FILE__)
 
 # Celluloid::ZMQ.init
@@ -107,7 +108,7 @@ require File.expand_path('../../lib/karibu/', __FILE__)
 # MessageService.start()
 
 
-addr = "tcp://127.0.0.1:8900"
+# addr = "tcp://127.0.0.1:8900"
 
 
 # class NClient
@@ -178,21 +179,23 @@ addr = "tcp://127.0.0.1:8900"
 # 10.times do |x|
 #   threads << Thread.new {p "thread #{x} ===>"; p MessageService::Message.echo}
 # end
-class Service < Karibu::Client
-  connection_string "tcp://127.0.0.1:8900"
-  timeout 60
-  endpoint "Facebook::TestController"
-  # endpoint "Message"
-end
 
-# p Service::Message.echo
-arr = []
-t = Time.now
-400.times do
-  arr << Thread.new { p Service::Facebook::TestController.hello_world }
-end
-arr.each{|x| x.join}
-p Time.now - t
+######################### JE COMMENCE ICI
+# class Service < Karibu::Client
+#   connection_string "tcp://127.0.0.1:8900"
+#   timeout 60
+#   endpoint "Facebook::TestController"
+#   # endpoint "Message"
+# end
+
+# # p Service::Message.echo
+# arr = []
+# t = Time.now
+# 400.times do
+#   arr << Thread.new { p Service::Facebook::TestController.hello_world }
+# end
+# arr.each{|x| x.join}
+# p Time.now - t
 
 # Benchmark.TESTS = 10_000
 # Benchmark.bmbm do |results|
@@ -312,3 +315,32 @@ p Time.now - t
 # MessageService::Message.echo
 # sleep
 # Thread.join()
+
+
+
+
+# require 'redis'
+
+# ids = ["50e9eaf7aa51fc81fe000001", "50e9eaf7aa51fc81fe000002", "50e9eaf8aa51fc81fe000003", "50e9eaf8aa51fc81fe000004", "50e9eaf8aa51fc81fe000005", "50e9eaf9aa51fc81fe000006", "50e9eaf9aa51fc81fe000007", "50e9eaf9aa51fc81fe000008", "50e9eaf9aa51fc81fe000009", "50e9eafaaa51fc81fe00000a", "50e9eafaaa51fc81fe00000b", "50e9eafaaa51fc81fe00000c", "50e9eafbaa51fc81fe00000d", "50e9eb01aa51fc81fe000022", "50e9eafbaa51fc81fe00000e", "50e9eafbaa51fc81fe00000f", "50e9eafbaa51fc81fe000010", "50e9eafcaa51fc81fe000011", "50e9eafcaa51fc81fe000012", "50e9eafcaa51fc81fe000013", "50e9eafdaa51fc81fe000014", "50e9eafdaa51fc81fe000015", "50e9eafdaa51fc81fe000016", "50e9eafdaa51fc81fe000017", "50e9eafeaa51fc81fe000018", "50e9eafeaa51fc81fe000019", "50e9eafeaa51fc81fe00001a", "50e9eaffaa51fc81fe00001b", "50e9eaffaa51fc81fe00001c", "50e9eaffaa51fc81fe00001d", "50e9eb00aa51fc81fe00001e", "50e9eb00aa51fc81fe00001f", "50e9eb00aa51fc81fe000020", "50e9eb00aa51fc81fe000021", "50e9eb01aa51fc81fe000023", "50e9eb01aa51fc81fe000024", "50e9eb02aa51fc81fe000025", "50e9eb02aa51fc81fe000026", "50e9eb02aa51fc81fe000027", "50e9eb02aa51fc81fe000028", "50e9eb03aa51fc81fe000029", "50e9eb03aa51fc81fe00002a", "50e9eb03aa51fc81fe00002b", "50e9eb03aa51fc81fe00002c", "50e9eb04aa51fc81fe00002d", "50e9eb04aa51fc81fe00002e", "50e9eb04aa51fc81fe00002f", "50e9eb05aa51fc81fe000030", "50ee9e6073f4100f2b000004", "50eea37d73f410a7a5000146"]
+
+
+# redis = Redis.new
+
+# ids.each do |id|
+#   redis.rpush("Jarvis:contracts", id)
+# end
+class Service < Karibu::Client
+  connection_string "tcp://127.0.0.1:5050"
+  timeout 60
+  endpoint "Jarvis"
+  # endpoint "Message"
+end
+
+# arr = []
+# 22.times do
+#   arr << Celluloid::Future.new {Service::Jarvis.find :pack_id, :calltracking_id, "51add8278a5da5d8520001bb"}
+# end
+
+# arr.each {|x| p x.value}
+p Service::Jarvis.find :phoneline_id, :contract_id, "50e9eaf7aa51fc81fe000001"
+
