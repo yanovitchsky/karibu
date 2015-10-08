@@ -38,6 +38,7 @@ module Karibu
     end
 
     def exec_request(request)
+      p request.resource.classify
       klass = request.resource.classify.constantize
       meth = request.method_called.to_sym
       check_route(klass, meth)
@@ -63,7 +64,7 @@ module Karibu
     end
 
     def print_backtrace e
-      $stderr.puts (e.backtrace * "\n")      
+      $stderr.puts (e.backtrace * "\n")
     end
   end
 end

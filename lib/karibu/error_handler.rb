@@ -19,6 +19,7 @@ module Karibu
     }
 
     def initialize(e)
+      Karibu::LOGGER.async.error(e.message)
       @original = e
       rewrite_error()
     end

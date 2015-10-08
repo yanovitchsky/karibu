@@ -1,36 +1,10 @@
 require 'connection_pool'
 
 module Karibu
-  class Requester
-    def initialize(url, timeout=nil)
-      @timeout = timeout || 30
-      @url = url
-      @ctx = ::ZMQ::Context.new(1)
-      @socket = @ctx.socket(::ZMQ::REQ)
-      # @socker
-      @socket.connect(url)
-    end
-
-    def call_rpc(request)
-      Timeout::timeout(@timeout){
-         @socket.send_string(request, 0)
-        # evts = @poller.poll(@timeout * 1000)
-        # raise Karibu::Errors::CustomError("cannot reach server for #{timeout}") if evts.size == 0
-        buff = ""
-        @socket.recv_string(buff)
-        @socket.close
-        @ctx.terminate
-        return buff
-      }
-      # ClientPool.new.execute(@url, @timeout, request)
-    end
-  end
-
-  
   class Client
     ## Class Method
     class << self
-      attr_accessor :addr, :instance, :timeout, :namespaces
+      attr_accessor :addr, :instance, :timeout, :namespaces, :robin
 
       def connection_string cs
         @addr = cs
@@ -42,8 +16,12 @@ module Karibu
       end
 
       def timeout sec
-        @timeout = sec 
+        @timeout = sec
         # TIMEOUT = sec
+      end
+
+      def robin
+        @robin = ConnectionRobin.instance
       end
 
       def endpoint namespace
@@ -51,7 +29,7 @@ module Karibu
         root = self
         modules = namespace.split("::")
         # raise modules.inspect
-        last = modules.last 
+        last = modules.last
         modules.each do |cons|
           unless const_defined?(cons)
             cons_mod = Module.new do
@@ -65,6 +43,7 @@ module Karibu
               end
             end
           end
+          # p root.const_get(cons)
           root = root.const_get(cons)
         end
       end
@@ -73,20 +52,16 @@ module Karibu
         raise "You should define a connection_string" if @addr.nil?
       end
 
-      def execute(xaddr, timeout, klass, method_name, args)
+      # def execute(xaddr, timeout, klass, method_name, args)
+      def execute(robin, klass, method_name, args)
         begin
+          p klass
           request = Karibu::ClientRequest.new(klass.to_s, method_name.to_s, args)
-          requester = Karibu::Requester.new(xaddr, timeout)
-          # time = Time.now
+          # requester = Karibu::Requester.new(robin.urls.first, robin.timeout)
+          requester = robin.get_requester
+          # p requester
           response = requester.call_rpc(request.encode())
-          # p "TIME TAKEN FOR NETWORK---------------"
-          # p "#{(Time.now - time) * 1000}"
-          # p "--------------------------"
-          # time = Time.now
           result = Karibu::ClientResponse.new(response).decode
-          # p "TIME TAKEN FOR DECODING ---------------"
-          # p "#{(Time.now - time) * 1000}"
-          # p "--------------------------"
           unless result.error.nil?
             raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
           else
@@ -100,8 +75,11 @@ module Karibu
       def call(mod, method_name, args)
         xaddr = @addr
         timeout = @timeout
-        resp = Karibu::Client.execute(xaddr, timeout, mod.to_s, method_name, args)
-        resp  
+        robin_instance = Karibu::Client.robin
+        robin = (robin_instance.initiated?) ? robin_instance : robin_instance.init(xaddr,timeout)
+        # resp = Karibu::Client.execute(xaddr, timeout, mod.to_s, method_name, args, robin)
+        resp = Karibu::Client.execute(robin, mod.to_s, method_name, args)
+        resp
       end
 
 
@@ -121,4 +99,3 @@ module Karibu
     end
   end
 end
-

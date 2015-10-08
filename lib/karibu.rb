@@ -1,6 +1,6 @@
 require 'rubygems'
 # require 'bundler/setup'
-require 'celluloid'
+require 'celluloid/current'
 require 'ffi-rzmq'
 require 'celluloid/zmq'
 require 'msgpack'
@@ -8,6 +8,8 @@ require "log4r"
 require "hamster"
 require 'timeout'
 require 'thor'
+require 'i18n'
+require 'active_support/inflector'
 # require 'msgpack' unless defined? JRUBY_VERSION
 # require "msgpack-jruby" if defined? JRUBY_VERSION
 # require 'concurrent'
@@ -23,6 +25,7 @@ require "karibu/queue"
 require "karibu/executor"
 require "karibu/dispatcher"
 require "karibu/server"
+require 'karibu/connection_robin'
 require "karibu/client"
 require "karibu/service"
 require "karibu/cli"
@@ -34,7 +37,7 @@ module Karibu
   KARIBU_ENV = ENV['KARIBU_ENV'] || 'development'
   LOGGER = Karibu::Logger.new()
   # trap("INT") { puts "Shutting down."; exit}
-  trap("INT") { 
+  trap("INT") {
     puts "Shutting down."
     system("kill -9 #{Process.pid}")
   }

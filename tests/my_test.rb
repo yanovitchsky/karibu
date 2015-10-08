@@ -2,38 +2,27 @@ require 'ffi-rzmq'
 require File.expand_path('../../lib/karibu', __FILE__)
 
 
-addr = "tcp://127.0.0.1:8900"
-
-# class Documentation
-#   #
-#   # returns documentations for services
-#   #
-#   #
-#   # @return [String] formatted doc string
-#   # 
-#   def self.call
-#     Karibu::Doc.serve_doc
-#   end
-# end
+addr1 = "tcp://127.0.0.1:8900"
+addr2 = "tcp://127.0.0.1:8901"
 
 class Message
-  include Karibu::Helpers
-  
+  # include Karibu::Helpers
+
   # params_for :echo do
-  #  optional :test, type: Integer 
+  #  optional :test, type: Integer
   # end
-  def self.echo
-    # sleep(60)
-    raise "test"
-    "hello world"
+  def self.echo(number)
+    n = rand(3..6)
+    sleep(1)
+    "I have received #{number}"
   end
 
   # params_for :toto do
 
   # end
-  def self.toto
-    
-  end
+  # def self.toto
+  #
+  # end
 end
 
 # Karibu::Doc.new do
@@ -57,7 +46,7 @@ end
 
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
-  threads 2
+  threads 30
   expose 'Message#echo'
   # expose 'Documentation#call'
   # expose 'Message#echo' do
@@ -66,9 +55,39 @@ class TestService < Karibu::Service
   #   arg 'c', type: Integer, desc: "number of stripes"
   #   returns "string containing hello word", String
   # end
-  use Middleware
+  # use Middleware
   # response_timeout 40
 end
+
+class TestServiceTwo < Karibu::Service
+  connection_string "tcp://127.0.0.1:8901"
+  threads 30
+  expose 'Message#echo'
+  # expose 'Documentation#call'
+  # expose 'Message#echo' do
+  #   desc 'permits name for someone'
+  #   arg 'x', type: String, desc: "name of string"
+  #   arg 'c', type: Integer, desc: "number of stripes"
+  #   returns "string containing hello word", String
+  # end
+  # use Middleware
+  # response_timeout 40
+end
+class TestServiceThree < Karibu::Service
+  connection_string "tcp://127.0.0.1:8902"
+  threads 30
+  expose 'Message#echo'
+  # expose 'Documentation#call'
+  # expose 'Message#echo' do
+  #   desc 'permits name for someone'
+  #   arg 'x', type: String, desc: "name of string"
+  #   arg 'c', type: Integer, desc: "number of stripes"
+  #   returns "string containing hello word", String
+  # end
+  # use Middleware
+  # response_timeout 40
+end
+
 
 
 # p Documentation.call
@@ -103,13 +122,16 @@ end
 #     test = ''
 #     @socket.read test
 #     p "got response: #{test}"
-    
+
 #   end
 # end
 
+# env = ENV['KARIBU_ENV']
+# p env
+# Karibu::LOGGER = Karibu::Logger.new(env, 'log')
 
+TestService.start()
+TestServiceTwo.start()
+TestServiceThree.start()
 
-# TestService.start()
-
-# sleep
-
+sleep

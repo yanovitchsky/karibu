@@ -5,7 +5,8 @@
 # require File.expand_path('../request', __FILE__)
 require 'benchmark'
 require 'net/http'
-require 'redis'
+require 'concurrent'
+# require 'redis'
 require File.expand_path('../../lib/karibu/', __FILE__)
 
 # Celluloid::ZMQ.init
@@ -45,7 +46,7 @@ require File.expand_path('../../lib/karibu/', __FILE__)
 #       exec_request(@full_msg[2])
 #       @full_msg = []
 #     end
-    
+
 #   end
 
 #   def exec_request(msg)
@@ -98,11 +99,11 @@ require File.expand_path('../../lib/karibu/', __FILE__)
 #   connection_string 'tcp://127.0.0.1:3435'
 
 #   def on_connection
-    
+
 #   end
 
 #   def on_deconnexion
-    
+
 #   end
 # end
 # MessageService.start()
@@ -206,8 +207,8 @@ require File.expand_path('../../lib/karibu/', __FILE__)
 #   connection_string "tcp://127.0.0.1:6000"
 # end
 
-# prospect_id = "53a1a4bf504cdbe33d000001" 
-# cms_site_id = "537c7eecba946a31e3000033" 
+# prospect_id = "53a1a4bf504cdbe33d000001"
+# cms_site_id = "537c7eecba946a31e3000033"
 
 
 # iter = 100
@@ -329,18 +330,46 @@ require File.expand_path('../../lib/karibu/', __FILE__)
 # ids.each do |id|
 #   redis.rpush("Jarvis:contracts", id)
 # end
-class Service < Karibu::Client
-  connection_string "tcp://127.0.0.1:5050"
-  timeout 60
-  endpoint "Jarvis"
-  # endpoint "Message"
-end
-
+# class Service < Karibu::Client
+#   connection_string "tcp://127.0.0.1:5050"
+#   timeout 60
+#   endpoint "Jarvis"
+# end
+# class CorleoneApiService < Karibu::Client
+#   connection_string "tcp://leeloo.api.sx:8900"
+#   timeout 60
+#   endpoint "CorleoneService::ActivitiesController"
+#   # endpoint "Message"
+# end
+# p Service::Jarvis.find :pack_id, :calltracking_id, "50850beb8a5da54521000038" #=> {:pack_id => "" | [], calltracking_id: "50850beb8a5da54521000038"}
+# p Service::Jarvis.add_adwords_accounts({id: "8480380987", name: "20TH DISTRICT - C501092084115822-2073"})
 # arr = []
 # 22.times do
 #   arr << Celluloid::Future.new {Service::Jarvis.find :pack_id, :calltracking_id, "51add8278a5da5d8520001bb"}
 # end
 
 # arr.each {|x| p x.value}
-p Service::Jarvis.find :phoneline_id, :contract_id, "50e9eaf7aa51fc81fe000001"
+# p CorleoneApiService::CorleoneService::ActivitiesController.get_all({:filters=>{:status=>0}, :orders=>{:status=>"asc", :name=>"asc"}})
 
+class Service < Karibu::Client
+  connection_string ["tcp://127.0.0.1:8900", "tcp://127.0.0.1:8901", "tcp://127.0.0.1:8902"]
+  # connection_string "tcp://127.0.0.1:8900"
+  timeout 60
+  endpoint "Message"
+  # endpoint "Message"
+end
+
+# my_pool = Concurrent::FixedThreadPool.new(10)
+arr = []
+t = Time.now
+150.times do |n|
+  # my_pool.post do
+  arr << Thread.new do
+    p  "My number is #{n} and #{Service::Message.echo(n)}"
+  end
+end
+
+# my_pool.wait_for_termination
+arr.each{|t| t.join}
+p "finished in #{Time.now - t}"
+# p Service::Message.echo

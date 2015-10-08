@@ -9,7 +9,11 @@ module Karibu
       @workers_url = "inproc://karibu_server"
       @ctx = ::ZMQ::Context.new(1)
       @numberofthreads = numberofthreads
-      @queue = Karibu::Queue.supervise_as :queue, @ctx, @address, @workers_url, :server
+      # @queue = Karibu::Queue.supervise_as :queue, @ctx, @address, @workers_url, :server
+      @queue = Karibu::Queue.supervise(
+        as: :queue,
+        args: [@ctx, @address, @workers_url, :server]
+      )
     end
 
     def run
@@ -21,7 +25,7 @@ module Karibu
 
     # class GroupSupervisor
     #   supervise Karibu::Queue, as: :queue
-    #   pool      Karibu::Dispatcher, as: :dispatcher_pool, 
+    #   pool      Karibu::Dispatcher, as: :dispatcher_pool,
     # end
   end
 end

@@ -7,6 +7,7 @@ module Karibu
     def_delegators :logger, :level, :debug, :info, :warn, :error, :fatal
 
     def initialize(name='karibu', folder='log')
+      p name
       destination = File.directory?(folder) ? "#{folder}/" : ""
       log_file = ENV['KARIBU_ENV'].nil? ? "#{destination}#{name}.log" : "#{destination}#{ENV['KARIBU_ENV']}.log"
       @logger = ::Log4r::Logger.new(name)
