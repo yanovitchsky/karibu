@@ -6,5 +6,6 @@ gemspec
 
 gem 'msgpack-jruby', :require => 'msgpack', :platforms => :jruby
 gem 'msgpack', :require => 'msgpack', :platforms => :ruby
+gem 'activesupport'
 # gem 'redis'
 # gem 'visibleo_intern_messaging', git: ""
