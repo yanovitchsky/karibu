@@ -27,7 +27,7 @@ module Karibu
 
     private
     def check_msg
-      
+
     end
   end
 
@@ -35,10 +35,11 @@ module Karibu
     attr_accessor :type, :id, :error, :result
     def initialize(packet)
       @packet = packet
+      @symbolize_keys = Karibu::ClientConfig.instance.symbolize_keys
     end
 
     def decode
-      msg = MessagePack.unpack(@packet, :symbolize_keys => true, :encoding => Encoding::UTF_8)
+      msg = MessagePack.unpack(@packet, :symbolize_keys => @symbolize_keys, :encoding => Encoding::UTF_8)
       [:type=, :id=, :error=, :result=].each_with_index do |meth, index|
         self.send(meth, msg[index])
       end

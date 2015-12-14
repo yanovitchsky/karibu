@@ -131,7 +131,7 @@ end
 # Karibu::LOGGER = Karibu::Logger.new(env, 'log')
 
 TestService.start()
-TestServiceTwo.start()
-TestServiceThree.start()
+# TestServiceTwo.start()
+# TestServiceThree.start()
 
 sleep

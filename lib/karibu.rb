@@ -18,6 +18,7 @@ require "karibu/doc"
 require "karibu/errors"
 require "karibu/error_handler"
 require "karibu/logger"
+require 'karibu/client_config'
 require "karibu/server_request"
 require "karibu/client_request"
 require "karibu/response"
@@ -34,6 +35,7 @@ require "karibu/helpers"
 module Karibu
   # Your code goes here...
   # LOGFILE = "test1"
+
   KARIBU_ENV = ENV['KARIBU_ENV'] || 'development'
   LOGGER = Karibu::Logger.new()
   # trap("INT") { puts "Shutting down."; exit}

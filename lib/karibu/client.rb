@@ -48,6 +48,12 @@ module Karibu
         end
       end
 
+      # sets up response keys symbol
+      def symbolize_keys bool
+        config = Karibu::ClientConfig.instance
+        config.symbolize_keys = bool
+      end
+
       def connect
         raise "You should define a connection_string" if @addr.nil?
       end
