@@ -2,7 +2,7 @@ require 'rubygems'
 # require 'bundler/setup'
 require 'celluloid/current'
 require 'ffi-rzmq'
-require 'celluloid/zmq'
+#require 'celluloid/zmq'
 require 'msgpack'
 require "log4r"
 require "hamster"

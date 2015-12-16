@@ -30,12 +30,12 @@ module Karibu
       end
 
       def response_timeout timeout
-        @timeout = timeout     
+        @timeout = timeout
       end
 
       def start
         raise "You should define a connection_string" if @addr.nil?
-        Celluloid::ZMQ.init
+#        Celluloid::ZMQ.init
         @routes.freeze
         app = init_middlewares
         self.new(app)
@@ -73,7 +73,7 @@ module Karibu
 
     end
 
-    # instance 
+    # instance
     # attention on a besoin de l'id de la requete avant de l'envoyer mode zmq async
 
 
