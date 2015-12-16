@@ -16,7 +16,7 @@ module Karibu
     def server
       begin
         server = ::Karibu::CLI.new(options_hash)
-        server.start  
+        server.start
       rescue Exception => e
         raise Thor::Error, e.message
       end
@@ -26,7 +26,7 @@ module Karibu
     def options_hash
       hash = {}
       [:env, :bind, :port, :thread, :daemon, :initfile, :pidfile].each do |opt|
-        hash[opt] = options[opt.to_s] if options.has_key?(opt.to_s) 
+        hash[opt] = options[opt.to_s] if options.has_key?(opt.to_s)
       end
       hash
     end

@@ -6,7 +6,7 @@ module Karibu
     def initialize(options={})
       @options = final_options(options)
       raise "port #{@options[:port]} is already used" if port_open?(@options[:port])
-      ENV['KARIBU_ENV'] = @options[:environment] || "development"
+      ENV['KARIBU_ENV'] = @options[:environment]
       @service = create_service @options
       if @service.nil?
         raise "Unable to load server no service has been defined"
@@ -29,7 +29,7 @@ module Karibu
           dirname = File.dirname(@options[:pidfile])
           unless dirname == "."
             FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
-            pidfile = @options[:pidfile].split('/').last 
+            pidfile = @options[:pidfile].split('/').last
           else
             pidfile = @options[:pidfile]
           end
