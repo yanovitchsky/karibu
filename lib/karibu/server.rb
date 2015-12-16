@@ -17,7 +17,7 @@ module Karibu
     end
 
     def run
-      Karibu::LOGGER.async.info "server started on #{@address} with #{@numberofthreads} threads"
+      Karibu::LOGGER.async.info "#{ENV['KARIBU_ENV']} server started on #{@address} with #{@numberofthreads} threads"
       Celluloid::Actor[:queue].async.run
       pool = Karibu::Dispatcher.pool(size: @numberofthreads, args: [@ctx, @workers_url, @routes, @options])
       @numberofthreads.times { pool.async.run}
