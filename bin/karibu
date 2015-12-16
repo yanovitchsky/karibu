@@ -6,7 +6,7 @@ module Karibu
   class BIN < ::Thor
 
     desc "server", "Start a karibu server"
-    method_option :env,      aliases: "-e", desc: "environment KARIBU_ENV", default: "development"
+    method_option :environment,      aliases: "-e", desc: "environment KARIBU_ENV", default: "development"
     method_option :bind,     aliases: "-b", desc: "server bind ip address", default: "127.0.0.1"
     method_option :port,     aliases: "-p", desc: "server listening port",  default: 8900
     method_option :thread,   aliases: "-t", desc: "server thread pool",     default: 10
@@ -25,7 +25,7 @@ module Karibu
     private
     def options_hash
       hash = {}
-      [:env, :bind, :port, :thread, :daemon, :initfile, :pidfile].each do |opt|
+      [:environment, :bind, :port, :thread, :daemon, :initfile, :pidfile].each do |opt|
         hash[opt] = options[opt.to_s] if options.has_key?(opt.to_s)
       end
       hash
