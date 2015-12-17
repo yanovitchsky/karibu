@@ -21,8 +21,10 @@ module Karibu
           @service.start
           sleep()
         else
+          Celluloid.shutdown
           pid = fork do
             $stdout.reopen("/dev/null", "w")
+            Celluloid.boot
             @service.start
             sleep()
           end
