@@ -1,6 +1,6 @@
 module Karibu
   class ClientRequest
-    attr_accessor :id, :resource, :method_called, :params 
+    attr_accessor :id, :resource, :method_called, :params
 
     def initialize(resource, method_called, params)
       @resource = resource

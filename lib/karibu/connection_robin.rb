@@ -53,7 +53,9 @@ module Karibu
 
     def get_requester
       @lock.synchronize{
-        p "serve with url #{@urls[@next_requester_index]}"
+        unless ENV['KARIBU_ENV'] == "production"
+          Karibu::LOGGER.async.debug "serve with url #{@urls[@next_requester_index]}"
+        end
         requester = Karibu::Requester.new @urls[@next_requester_index], @timeout
         @next_requester_index = (@next_requester_index + 1) % @nbr_requester
         requester

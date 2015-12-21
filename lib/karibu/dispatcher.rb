@@ -14,12 +14,13 @@ module Karibu
     def process_request(msg)
       begin_t = Time.now
       request = Karibu::ServerRequest.new(msg).decode()
-      Karibu::LOGGER.async.info request.to_s
+      # Karibu::LOGGER.async.info request.to_s
       begin
         Timeout::timeout(@timeout){
           response = exec_request(request)
           # response = @app.call(request)
-          Karibu::LOGGER.async.info "#{response.to_s} in #{Time.now - begin_t}"
+          # Karibu::LOGGER.async.info "#{response.to_s} in #{Time.now - begin_t}"
+          _log_request(request, begin_t, response)
           response
         }
       rescue => e
@@ -38,7 +39,7 @@ module Karibu
     end
 
     def exec_request(request)
-      p request.resource.classify
+      # p request.resource.classify
       klass = request.resource.classify.constantize
       meth = request.method_called.to_sym
       check_route(klass, meth)
@@ -65,6 +66,15 @@ module Karibu
 
     def print_backtrace e
       $stderr.puts (e.backtrace * "\n")
+    end
+
+    def _log_request(request, time_started, response)
+      if Karibu::LOGGER.overwritten?
+        Karibu::LOGGER.log_with_block(request, time_started, response)
+      else
+        log = "resource=#{request.resource} method=#{request.method_called} params=#{request.params} duration=#{(Time.now - time_started).round(3)}"
+        Karibu::LOGGER.async.info(log)
+      end
     end
   end
 end
