@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "connection_pool"
   spec.add_dependency "thor"
   spec.add_dependency "concurrent-ruby"
+  spec.add_dependency "hashie"
   # spec.add_dependency "activesupport"
   # spec.add_dependency 'activesupport-inflector'
   spec.add_dependency 'i18n'

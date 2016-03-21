@@ -6,10 +6,12 @@ require 'ffi-rzmq'
 require 'msgpack'
 require "log4r"
 require "hamster"
+require 'hashie'
 require 'timeout'
 require 'thor'
 require 'i18n'
 require 'active_support/inflector'
+# p JRUBY_VERSION
 # require 'msgpack' unless defined? JRUBY_VERSION
 # require "msgpack-jruby" if defined? JRUBY_VERSION
 # require 'concurrent'

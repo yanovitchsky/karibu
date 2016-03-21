@@ -1,6 +1,12 @@
 require 'connection_pool'
 
 module Karibu
+
+  class ErrorHash < Hash
+    include ::Hashie::Extensions::MergeInitializer
+    include ::Hashie::Extensions::IndifferentAccess
+  end
+
   class Client
     ## Class Method
     class << self
@@ -61,7 +67,7 @@ module Karibu
       # def execute(xaddr, timeout, klass, method_name, args)
       def execute(robin, klass, method_name, args)
         begin
-          p klass
+          # p klass
           request = Karibu::ClientRequest.new(klass.to_s, method_name.to_s, args)
           # requester = Karibu::Requester.new(robin.urls.first, robin.timeout)
           requester = robin.get_requester
@@ -69,7 +75,8 @@ module Karibu
           response = requester.call_rpc(request.encode())
           result = Karibu::ClientResponse.new(response).decode
           unless result.error.nil?
-            raise Karibu::Errors.const_get(result.error[:klass]).new(result.error[:msg])
+            error_hash = ErrorHash.new result.error
+            raise Errors.const_get(error_hash[:klass]).new(error_hash[:msg])
           else
             result.result
           end

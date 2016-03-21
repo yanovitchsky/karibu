@@ -17,6 +17,10 @@ class Message
     "I have received #{number}"
   end
 
+  def self.test
+    return "hello World"
+  end
+
   # params_for :toto do
 
   # end
@@ -46,8 +50,8 @@ end
 
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
-  threads 30
-  expose 'Message#echo'
+  threads 50
+  expose 'Message#test'
   # expose 'Documentation#call'
   # expose 'Message#echo' do
   #   desc 'permits name for someone'

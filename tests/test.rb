@@ -1,13 +1,13 @@
 # require 'rubygems'
 # require 'ffi-rzmq'
 # require 'celluloid/zmq'
-# require 'msgpack'
+require 'msgpack'
 # require File.expand_path('../request', __FILE__)
 require 'benchmark'
 require 'net/http'
-require 'concurrent'
+# require 'concurrent'
 # require 'redis'
-require File.expand_path('../../lib/karibu/', __FILE__)
+require File.expand_path('../../lib/karibu', __FILE__)
 
 # Celluloid::ZMQ.init
 
@@ -330,24 +330,29 @@ require File.expand_path('../../lib/karibu/', __FILE__)
 # ids.each do |id|
 #   redis.rpush("Jarvis:contracts", id)
 # end
-# class Service < Karibu::Client
-#   connection_string "tcp://127.0.0.1:5050"
-#   timeout 60
-#   endpoint "Jarvis"
-#   symbolize_keys false
-# end
+
+#######################################################################################
+class Service < Karibu::Client
+  connection_string "tcp://127.0.0.1:5050"
+  # connection_string "tcp://jarvis.service.consul:32770"
+  timeout 60
+  endpoint "Jarvis"
+  symbolize_keys false
+end
 # class CorleoneApiService < Karibu::Client
 #   connection_string "tcp://leeloo.api.sx:8900"
 #   timeout 60
 #   endpoint "CorleoneService::ActivitiesController"
 #   # endpoint "Message"
 # end
-# p Service::Jarvis.find :pack_id, :calltracking_id, "50850beb8a5da54521000038" #=> {:pack_id => "" | [], calltracking_id: "50850beb8a5da54521000038"}
+# p Service::Jarvis.find :pack_id, :adwords_customer_id, "50850beb8a5da54521000038" #=> {:pack_id => "" | [], calltracking_id: "50850beb8a5da54521000038"}
 # t = Time.now
 # res = Service::Jarvis.find :contract_id, {phoneline_id: ["508512e78a5da54521000043","50815f1c8a5da5452100002b","50b492718a5da5b453000013","50811a728a5da54521000019"]} #=> {:pack_id => "" | [], calltracking_id: "50850beb8a5da54521000038"}
 # p res
-# res2 = Service::Jarvis.find :phoneline_id, {pack_id: "508a51548a5da50bd2000082"}
-# p res2
+res2 = Service::Jarvis.find :adwords_customer_id, {contract_id: "53bedce8aa51fcee030004c0"}
+p res2
+
+################################################################################################
 # p Time.now - t
 # p Service::Jarvis.add_adwords_accounts({id: "8480380987", name: "20TH DISTRICT - C501092084115822-2073"})
 # arr = []
@@ -358,16 +363,27 @@ require File.expand_path('../../lib/karibu/', __FILE__)
 # arr.each {|x| p x.value}
 # p CorleoneApiService::CorleoneService::ActivitiesController.get_all({:filters=>{:status=>0}, :orders=>{:status=>"asc", :name=>"asc"}})
 #
-class Service < Karibu::Client
-  # connection_string ["tcp://127.0.0.1:8900", "tcp://127.0.0.1:8901", "tcp://127.0.0.1:8902"]
-  connection_string "tcp://127.0.0.1:9290"
-  timeout 60
-  endpoint "XenaController"
-#   # endpoint "Message"
-end
-# p Service::Message.echo(23)
+# class Service < Karibu::Client
+#   # connection_string ["tcp://127.0.0.1:8900", "tcp://127.0.0.1:8901", "tcp://127.0.0.1:8902"]
+#   connection_string "tcp://127.0.0.1:8900"
+#   timeout 60
+#   # endpoint "XenaController"
+#   endpoint "Message"
+# end
+#
+# t = Time.now
+# th = []
+# 500.times do
+#   th << Thread.new{ Service::Message.test}
+# end
+# # 500.times do
+# #   Service::Message.test
+# # end
+# th.each{|t| t.join}
+# p Time.now - t
 
-p Service::XenaController.get("SapCompany", {fields: [:name], filters: {id: "1000488"}})
+
+# p Service::XenaController.get("SapCompany", {fields: [:name], filters: {id: "1000488"}})
 #
 # # my_pool = Concurrent::FixedThreadPool.new(10)
 # arr = []
