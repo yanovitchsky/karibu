@@ -89,7 +89,7 @@ module Karibu
         xaddr = @addr
         timeout = @timeout
         robin_instance = Karibu::Client.robin
-        robin = (robin_instance.initiated?) ? robin_instance : robin_instance.init(xaddr,timeout)
+        robin = robin_instance.init(xaddr,timeout)
         # resp = Karibu::Client.execute(xaddr, timeout, mod.to_s, method_name, args, robin)
         resp = Karibu::Client.execute(robin, mod.to_s, method_name, args)
         resp

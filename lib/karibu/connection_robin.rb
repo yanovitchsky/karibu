@@ -12,7 +12,6 @@ module Karibu
     end
 
     def call_rpc(request)
-      p request
       Timeout::timeout(@timeout){
          @socket.send_string(request, 0)
         # evts = @poller.poll(@timeout * 1000)
