@@ -332,13 +332,13 @@ require File.expand_path('../../lib/karibu', __FILE__)
 # end
 
 #######################################################################################
-class Service < Karibu::Client
-  connection_string "tcp://127.0.0.1:5050"
-  # connection_string "tcp://jarvis.service.consul:32770"
-  timeout 60
-  endpoint "Jarvis"
-  symbolize_keys false
-end
+# class Service < Karibu::Client
+#   connection_string "tcp://127.0.0.1:5050"
+#   # connection_string "tcp://jarvis.service.consul:32770"
+#   timeout 60
+#   endpoint "Jarvis"
+#   symbolize_keys false
+# end
 # class CorleoneApiService < Karibu::Client
 #   connection_string "tcp://leeloo.api.sx:8900"
 #   timeout 60
@@ -349,8 +349,8 @@ end
 # t = Time.now
 # res = Service::Jarvis.find :contract_id, {phoneline_id: ["508512e78a5da54521000043","50815f1c8a5da5452100002b","50b492718a5da5b453000013","50811a728a5da54521000019"]} #=> {:pack_id => "" | [], calltracking_id: "50850beb8a5da54521000038"}
 # p res
-res2 = Service::Jarvis.find :adwords_customer_id, {contract_id: "53bedce8aa51fcee030004c0"}
-p res2
+# res2 = Service::Jarvis.find :adwords_customer_id, {contract_id: "53bedce8aa51fcee030004c0"}
+# p res2
 
 ################################################################################################
 # p Time.now - t
@@ -363,24 +363,35 @@ p res2
 # arr.each {|x| p x.value}
 # p CorleoneApiService::CorleoneService::ActivitiesController.get_all({:filters=>{:status=>0}, :orders=>{:status=>"asc", :name=>"asc"}})
 #
-# class Service < Karibu::Client
-#   # connection_string ["tcp://127.0.0.1:8900", "tcp://127.0.0.1:8901", "tcp://127.0.0.1:8902"]
-#   connection_string "tcp://127.0.0.1:8900"
-#   timeout 60
-#   # endpoint "XenaController"
-#   endpoint "Message"
+class PlopService < Karibu::Client
+  connection_string ["tcp://127.0.0.1:8900", "tcp://127.0.0.1:8901", "tcp://127.0.0.1:8902"]
+  # connection_string "tcp://127.0.0.1:8900"
+  timeout 60
+  # endpoint "XenaController"
+  endpoint "Message"
+end
+
+class EchoService < Karibu::Client
+  connection_string "tcp://127.0.0.1:7000"
+  # connection_string "tcp://127.0.0.1:8900"
+  timeout 60
+  # endpoint "XenaController"
+  endpoint "Message"
+end
+
+t = Time.now
+th = []
+100.times do |x|
+  th << Thread.new{ p PlopService::Message.echo(rand(50))}
+  if ((x % 10) == 0)
+    th << Thread.new{ p  EchoService::Message.test}
+  end
+end
+# 30.times do
+#   PlopService::Message.echo(rand(50))
 # end
-#
-# t = Time.now
-# th = []
-# 500.times do
-#   th << Thread.new{ Service::Message.test}
-# end
-# # 500.times do
-# #   Service::Message.test
-# # end
-# th.each{|t| t.join}
-# p Time.now - t
+th.each{|t| t.join}
+p Time.now - t
 
 
 # p Service::XenaController.get("SapCompany", {fields: [:name], filters: {id: "1000488"}})

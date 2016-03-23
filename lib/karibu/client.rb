@@ -65,12 +65,13 @@ module Karibu
       end
 
       # def execute(xaddr, timeout, klass, method_name, args)
-      def execute(robin, klass, method_name, args)
+      # def execute(robin, klass, method_name, args)
+      def execute(requester, klass, method_name, args)
         begin
           # p klass
           request = Karibu::ClientRequest.new(klass.to_s, method_name.to_s, args)
           # requester = Karibu::Requester.new(robin.urls.first, robin.timeout)
-          requester = robin.get_requester
+          # requester = robin.get_requester
           # p requester
           response = requester.call_rpc(request.encode())
           result = Karibu::ClientResponse.new(response).decode
@@ -89,9 +90,9 @@ module Karibu
         xaddr = @addr
         timeout = @timeout
         robin_instance = Karibu::Client.robin
-        robin = robin_instance.init(xaddr,timeout)
+        robin = robin_instance.init(self, xaddr, timeout)
         # resp = Karibu::Client.execute(xaddr, timeout, mod.to_s, method_name, args, robin)
-        resp = Karibu::Client.execute(robin, mod.to_s, method_name, args)
+        resp = Karibu::Client.execute(robin.get_requester(self), mod.to_s, method_name, args)
         resp
       end
 

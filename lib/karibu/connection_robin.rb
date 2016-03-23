@@ -28,9 +28,11 @@ module Karibu
 
   class ConnectionRobin
     include Singleton
-    attr_accessor :urls, :timeout
+    # attr_accessor :urls, :timeout
+    attr_accessor :services
 
     def initialize
+      @services = {}
       @initiated = false
     end
 
@@ -38,35 +40,41 @@ module Karibu
       @initiated
     end
 
-    def init(urls, timeout)
-      @timeout = timeout
-      @urls = (urls.is_a? ::Array) ? urls : [urls]
-      @lock = Mutex.new
-      @nbr_requester = @urls.size
-      @next_requester_index = 0
-      @requesters = []
-      @pool = nil
-      # create_requester()
-      @initiated = true
+    def init(service_name, urls, timeout)
+      unless @services[service_name]
+        queue = ::Queue.new
+        opts_urls = (urls.is_a? ::Array) ? urls : [urls]
+        # fill queue
+        opts_urls.each {|url| queue << url}
+
+        service_opts = {
+          urls: opts_urls,
+          timeout: timeout,
+          lock: ::Mutex.new,
+          url_queue: queue # filled queue
+        }
+        @services[service_name] = service_opts
+      end
       self
     end
 
-    def get_requester
-      @lock.synchronize{
-        unless ENV['KARIBU_ENV'] == "production"
-          Karibu::LOGGER.async.debug "serve with url #{@urls[@next_requester_index]}"
+    def get_requester(service_name)
+      service = @services[service_name]
+      raise "Unkown service #{service_name}" if service.nil?
+      url = nil
+      lock = service[:lock]
+      lock.synchronize do
+        url = service[:url_queue].pop(true)
+        # if queue empty refill
+        if service[:url_queue].size == 0
+          service[:urls].each {|url| service[:url_queue] << url}
         end
-        requester = Karibu::Requester.new @urls[@next_requester_index], @timeout
-        @next_requester_index = (@next_requester_index + 1) % @nbr_requester
-        requester
-      }
-    end
-
-    private
-    def create_requester
-      @urls.each do |url|
-        @requesters << Karibu::Requester.new(url, @timeout)
       end
+      timeout = service[:timeout]
+      unless ENV['KARIBU_ENV'] == "production"
+        Karibu::LOGGER.async.debug "serve with url #{url}"
+      end
+      return Karibu::Requester.new url, timeout
     end
   end
 end

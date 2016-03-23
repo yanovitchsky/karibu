@@ -50,8 +50,8 @@ end
 
 class TestService < Karibu::Service
   connection_string "tcp://127.0.0.1:8900"
-  threads 50
-  expose 'Message#test'
+  threads 30
+  expose 'Message#echo'
   # expose 'Documentation#call'
   # expose 'Message#echo' do
   #   desc 'permits name for someone'
@@ -81,6 +81,21 @@ class TestServiceThree < Karibu::Service
   connection_string "tcp://127.0.0.1:8902"
   threads 30
   expose 'Message#echo'
+  # expose 'Documentation#call'
+  # expose 'Message#echo' do
+  #   desc 'permits name for someone'
+  #   arg 'x', type: String, desc: "name of string"
+  #   arg 'c', type: Integer, desc: "number of stripes"
+  #   returns "string containing hello word", String
+  # end
+  # use Middleware
+  # response_timeout 40
+end
+
+class TestServiceFour < Karibu::Service
+  connection_string "tcp://127.0.0.1:7000"
+  threads 30
+  expose 'Message#test'
   # expose 'Documentation#call'
   # expose 'Message#echo' do
   #   desc 'permits name for someone'
@@ -135,7 +150,8 @@ end
 # Karibu::LOGGER = Karibu::Logger.new(env, 'log')
 
 TestService.start()
-# TestServiceTwo.start()
-# TestServiceThree.start()
+TestServiceTwo.start()
+TestServiceThree.start()
+TestServiceFour.start()
 
 sleep
