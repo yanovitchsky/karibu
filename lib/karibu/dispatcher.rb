@@ -27,6 +27,7 @@ module Karibu
         begin
           print_backtrace(e) if ENV['KARIBU_ENV'] == 'development'
           server_exception = Karibu::ErrorHandler.new(e) # find karibu error based on execution error
+          rollbar_exception(e, resource: request.resource, method: request.method_called, params: request.params) # send error to Rollbar if defined
           raise server_exception.error
         rescue => e
           # rescue and send error to client based on name
@@ -74,6 +75,13 @@ module Karibu
       else
         log = "resource=#{request.resource} method=#{request.method_called} params=#{request.params} duration=#{(Time.now - time_started).round(3)}"
         Karibu::LOGGER.async.info(log)
+      end
+    end
+
+    def rollbar_exception(error, options)
+      if defined?(Rollbar)
+        p "Rollbar is defined"
+        Rollbar.error(error, options)
       end
     end
   end

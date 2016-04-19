@@ -34,7 +34,6 @@ module Karibu
         async.warn("Cannot Log: No block has been provided")
       else
         # Celluloid::Future.new do
-          p @block
           @block.call(request, time, response)
         # end
       end
