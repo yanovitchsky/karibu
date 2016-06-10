@@ -72,7 +72,7 @@ module Karibu
       end
       timeout = service[:timeout]
       unless ENV['KARIBU_ENV'] == "production"
-        Karibu::LOGGER.async.debug "serve with url #{url}"
+        # Karibu::LOGGER.async.debug "serve with url #{url}"
       end
       return Karibu::Requester.new url, timeout
     end

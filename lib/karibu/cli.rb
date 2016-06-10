@@ -19,14 +19,14 @@ module Karibu
       begin
         unless @options[:daemon]
           @service.start
-          sleep()
+          Kernel.sleep()
         else
           Celluloid.shutdown
           pid = fork do
             $stdout.reopen("/dev/null", "w")
             Celluloid.boot
             @service.start
-            sleep()
+            Kernel.sleep()
           end
           dirname = File.dirname(@options[:pidfile])
           unless dirname == "."
