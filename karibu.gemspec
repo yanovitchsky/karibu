@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Yann Akoun"]
   spec.email         = ["yann@visibleo.fr"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Rpc framework in ruby}
+  spec.description   = %q{Rpc framework in ruby using zeromq}
+  spec.homepage      = "http://visibleo.fr"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
@@ -24,10 +24,17 @@ Gem::Specification.new do |spec|
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  # spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.executables   = ['karibu']
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.11"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+
+  # spec.add_dependency "convulse-rb"
+  spec.add_dependency "concurrent-ruby"
+  spec.add_dependency "msgpack"
+  spec.add_dependency "ffi-rzmq"
+  spec.add_dependency "thor"
 end

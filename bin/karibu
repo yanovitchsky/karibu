@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require File.expand_path('../../lib/karibu', __FILE__)
+
+module Karibu
+  class BIN < ::Thor
+
+    desc "start", "Start the karibu server"
+    def start
+      Karibu::Server.start
+    end
+
+    desc "stop", "Stop the karibu server"
+    def stop
+      Karibu::Server.stop
+    end
+
+    desc "restart", "Restart the karibu server"
+    def restart
+      stop
+      start
+    end
+  end
+end
+
+Karibu::BIN.start
