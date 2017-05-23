@@ -5,33 +5,64 @@ module Karibu
     def initialize
       @timeout = Karibu::Configuration.configuration.timeout
       @logger = Karibu::Configuration.configuration.logger
+      @resources = Karibu::Configuration.configuration.resources
     end
 
-    def process(request)
+    def process(payload)
       begin
-        start_trace = Time.now
-        decoded_request = Karibu::Request.new(msg).decode
+        check_request(payload)
         response = Timeout::timeout(@timeout) do
-          exec_request(decoded_request)
+          exec_request(payload)
         end
-        _log(request, start_trace)
-        response
-      rescue => e
-        begin
-          print_backtrace(e) if ENV['KARIBU_ENV'] == 'development'
-        rescue => e
-
-        end
+      rescue ResourceNotFoundError, ResourceNotFoundError, ArgumentArityError => e
+        # begin
+          # print_backtrace(e) if ENV['KARIBU_ENV'] == 'development'
+          raise e
+      rescue Timeout::Error
+        raise ExecutionTimeoutError, "Request took too long to execute"
       end
     end
 
     private
 
-    def check_request(request)
-      PromiseLike.new{request}.
-        .then{|request| check_resource}
-        .then{|request| check_method}
-        .then{|request| check_params}
+    def exec_request(payload)
+      klass = Classify.it!(payload.resource)
+      method = payload.method.to_sym
+      params = payload.params
+      klass.send(method, *params)
+    end
+
+    def check_request(payload)
+      check_resource payload
+      check_method payload
+      check_arity payload
+    end
+
+    def check_resource(payload)
+      begin
+        klass = Classify.it!(payload.resource)
+        unless @resources.include? klass
+          raise ResourceNotFoundError, "Cannot find resource #{payload.resource}"
+        end
+      rescue NameError
+        raise ResourceNotFoundError, "Cannot find resource #{payload.resource}"
+      end
+    end
+
+    def check_method(payload)
+      klass = Classify.it!(payload.resource)
+      unless klass.respond_to? payload.method.to_sym
+        raise MethodNotFoundError, "Cannot find method #{payload.method} in resource #{payload.resource}"
+      end
+    end
+
+    def check_arity(payload)
+      klass = Classify.it!(payload.resource)
+      method = payload.method.to_sym
+
+      if klass.method(method).arity != payload.params.size
+        raise ArgumentArityError, "Wrong number of arguments #{payload.params.size} for method #{payload.method}"
+      end
     end
 
     def _log_error

@@ -1,7 +1,7 @@
 # @author yanovitchsky
 module Karibu
   class Request
-    attr_accessor :uniq_id, :resource, :method_called, :params
+    attr_accessor :uniq_id, :resource, :method, :params
     def initialize(packet)
       @packet = packet
     end
@@ -9,7 +9,7 @@ module Karibu
     def decode
       @msg = MessagePack.unpack(@packet, :symbolize_keys => true, :encoding => Encoding::UTF_8)
       check_msg()
-      [:type=, :uniq_id=, :resource=, :method_called=, :params=].each_with_index do |meth, index|
+      [:type=, :uniq_id=, :resource=, :method=, :params=].each_with_index do |meth, index|
         self.send(meth, @msg[index])
       end
       self
@@ -37,23 +37,23 @@ module Karibu
     end
 
     def check_type
-      raise Karibu::Errors::BadRequestError unless (@msg[0].is_a?(Fixnum) && @msg[0] == 0)
+      raise BadRequestError unless (@msg[0].is_a?(Fixnum) && @msg[0] == 0)
     end
 
     def check_id
-      raise Karibu::Errors::BadRequestError unless @msg[1].is_a? String
+      raise BadRequestError unless @msg[1].is_a? String
     end
 
     def check_resource
-      raise Karibu::Errors::BadRequestError unless @msg[2].is_a? String
+      raise BadRequestError unless @msg[2].is_a? String
     end
 
     def check_method
-      raise Karibu::Errors::BadRequestError unless @msg[3].is_a? ::String
+      raise BadRequestError unless @msg[3].is_a? ::String
     end
 
     def check_params
-      raise Karibu::Errors::BadRequestError unless @msg[4].is_a? ::Array
+      raise BadRequestError unless @msg[4].is_a? ::Array
     end
   end
 

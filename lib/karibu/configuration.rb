@@ -5,7 +5,7 @@ module Karibu
                   :port,
                   :address,
                   :timeout,
-                  :klasses,
+                  :resources,
                   :logger,
                   :pidfile,
                   :daemonize
@@ -32,8 +32,8 @@ module Karibu
     end
 
     # @return [Array<Class>] List of class exposed via rpc
-    def klasses
-      @klasses || []
+    def resources
+      @resources || []
     end
 
     # @return [Logger] The logger use to log server requests
@@ -48,7 +48,7 @@ module Karibu
 
     # @return [Boolean] Should the server be daemonized
     def daemonize
-      @daemonize || true
+      @daemonize || false
     end
 
     # @return [Karibu::Configuration] The server configuration

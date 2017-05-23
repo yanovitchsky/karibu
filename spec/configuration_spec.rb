@@ -16,8 +16,8 @@ describe Karibu::Configuration do
         expect(config.timeout).to eq(30)
       end
 
-      it "returns empty list of klasses" do
-        expect(config.klasses.size).to eq(0)
+      it "returns empty list of resources" do
+        expect(config.resources.size).to eq(0)
       end
 
       it "returns a default logger" do
@@ -31,7 +31,7 @@ describe Karibu::Configuration do
           config.workers = 20
           config.timeout = 60
           config.port = 8000
-          config.klasses = [Karibu::Request]
+          config.resources = [Karibu::Request]
           config.logger = Logger.new(STDOUT)
         end
         Karibu::Configuration.configuration
@@ -50,7 +50,7 @@ describe Karibu::Configuration do
       end
 
       it "returns the list of klasses" do
-        expect(conf.klasses.size).to eq(1)
+        expect(conf.resources.size).to eq(1)
       end
 
       it "returns logger" do

@@ -37,4 +37,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "msgpack"
   spec.add_dependency "ffi-rzmq"
   spec.add_dependency "thor"
+  spec.add_dependency 'classify'
 end

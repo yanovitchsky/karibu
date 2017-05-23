@@ -18,7 +18,6 @@ module Karibu
 
     # Instance Methods
     def initialize
-      # worker_url = "inproc://karibu-#{SecureRandom.hex(6)}-workers"
       @config = Karibu::Configuration.configuration
       p @config.pidfile
       @worker_pool = Concurrent::ThreadPoolExecutor.new(
@@ -37,9 +36,16 @@ module Karibu
       write_pid
       trap_signals
 
+      router = @ctx.socket(ZMQ::ROUTER)
+      router.bind(connection_string)
       while @running
-        p "Hello World"
-        sleep(2)
+        id = ''
+        empty = ''
+        payload = ''
+        router.recv_string id
+        router.recv_string empty
+        router.recv_string payload
+        p "I received a message #{payload}"
       end
     end
 
@@ -53,7 +59,26 @@ module Karibu
       p "cleaning up"
     end
 
+    def exec! id, request
+      Concurrent::Future.execute(executor: @worker_pool) do
+        payload = Karibu::Request.new(request).decode
+        _exec!(payload)
+      end
+    end
+
     private
+
+    def _exec!(payload)
+      begin
+        start_watch = Time.now
+        Dispatcher.new.process Karibu::Request.new(payload).decode
+        stop_watch = Time.now
+      rescue => e
+        raise e
+      # rescue
+
+      end
+    end
 
     def check_pid
       pidfile = @config.pidfile
@@ -125,10 +150,8 @@ module Karibu
       end
     end
 
-    def exec request
-      Concurrent::Future.execute(executor: @worker_pool) do
-        Dispatcher.new(request).process
-      end
+    def connection_string
+      "tcp://#{@config.address}:#{@config.port}"
     end
   end
 end
