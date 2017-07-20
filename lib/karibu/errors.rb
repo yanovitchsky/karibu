@@ -1,3 +1,4 @@
+# @author yanovitchsky
 class KaribuError < StandardError
   def initialize(msg=nil)
     super(msg)

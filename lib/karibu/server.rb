@@ -19,14 +19,13 @@ module Karibu
     # Instance Methods
     def initialize
       @config = Karibu::Configuration.configuration
-      p @config.pidfile
+      # p @config.pidfile
       @worker_pool = Concurrent::ThreadPoolExecutor.new(
         min_threads: @config.workers,
         max_thread: @config.workers + (@config.workers / 2).round,
         max_queue: 100
       )
       @ctx = ::ZMQ::Context.new
-      @request_mapper = Concurrent::Map.new
       @running = true
     end
 
@@ -45,7 +44,7 @@ module Karibu
         router.recv_string id
         router.recv_string empty
         router.recv_string payload
-        p "I received a message #{payload}"
+        exec!(id, payload, router)
       end
     end
 
@@ -59,24 +58,31 @@ module Karibu
       p "cleaning up"
     end
 
-    def exec! id, request
+    def exec! id, request, router
       Concurrent::Future.execute(executor: @worker_pool) do
-        payload = Karibu::Request.new(request).decode
-        _exec!(payload)
+        response = _exec!(request)
+        # p "I received a message #{request}"
+        # sleep rand(2)
+        router.send_string(id, ZMQ::SNDMORE)
+        router.send_string("", ZMQ::SNDMORE)
+        router.send_string(response)
       end
     end
 
     private
 
-    def _exec!(payload)
+    def _exec!(request)
       begin
         start_watch = Time.now
-        Dispatcher.new.process Karibu::Request.new(payload).decode
+        payload = Karibu::Request.new(request).decode
+        response = Dispatcher.new.process(payload)
         stop_watch = Time.now
-      rescue => e
-        raise e
-      # rescue
-
+        log(request, start_watch, stop_watch)
+        response(response, request)
+      rescue StandardError => e
+        log_error(e)
+        send_to_rollbar(e)
+        error_response(e, request)
       end
     end
 
@@ -152,6 +158,39 @@ module Karibu
 
     def connection_string
       "tcp://#{@config.address}:#{@config.port}"
+    end
+
+    def log_error(e)
+      @config.error_logger.error(e.backtrace.join("\n\t"))
+    end
+
+    def log(request, start_watch, stop_watch)
+      @config.logger.info("resource=#{request.resource} method=#{request.method_called} params=#{request.params} duration=#{(stop_watch - start_watch).round(3)}")
+    end
+
+    def send_to_rollbar(e)
+
+    end
+
+    def error_response(e, request)
+      id = request.uniq_id rescue 0
+      Response.new(1, id, e.message, nil).encode
+    end
+
+    def success_response(response, request)
+      Response.new(1, request.uniq_id, nil, response).encode
+    end
+
+    def get_request(request)
+
+    end
+
+    def send_reponse(response)
+
+    end
+
+    def listen(router)
+
     end
   end
 end

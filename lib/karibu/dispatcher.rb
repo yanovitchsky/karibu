@@ -8,6 +8,7 @@ module Karibu
       @resources = Karibu::Configuration.configuration.resources
     end
 
+    # Send the payload to the class exposed and execute it
     def process(payload)
       begin
         check_request(payload)

@@ -7,6 +7,7 @@ module Karibu
                   :timeout,
                   :resources,
                   :logger,
+                  :error_logger,
                   :pidfile,
                   :daemonize
 
@@ -38,12 +39,17 @@ module Karibu
 
     # @return [Logger] The logger use to log server requests
     def logger
-      @logger || Karibu::Logger.new
+      @logger || Karibu::Logger.new(Karibu.root.join("log/#{Karibu.env}.log"))
+    end
+
+    # @return [Logger] The logger use to log server errors
+    def error_logger
+      @error_logger || Karibu::Logger.new(Karibu.root.join("log/#{Karibu.env}.error.log"))
     end
 
     # @return [String] Full path of pid file
     def pidfile
-      @pidfile || File.expand_path('../../../karibu.pid', __FILE__)
+      @pidfile || Karibu.root.join('karibu.pid')
     end
 
     # @return [Boolean] Should the server be daemonized

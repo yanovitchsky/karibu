@@ -11,7 +11,9 @@ describe Karibu::Server do
 
     context 'When application return an error' do
       it 'instructs to log to error' do
-        expect(Karibu::Configuration.configuration.logger).to receive(:log)
+        # expect(Karibu::Configuration.configuration.error_logger).to receive(:error)
+        request = MessagePack.pack("hello world")
+        p Karibu::Server.instance.send(:_exec!, request)
       end
 
       it 'returns error packet' do

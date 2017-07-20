@@ -40,12 +40,13 @@ ctx = ZMQ::Context.new
   Thread.new do
     dealer = ctx.socket(ZMQ::REQ)
     dealer.connect("tcp://127.0.0.1:5050")
+    id = ARGV[0] || 0
     sleep rand(10)
-    # msg = ""
+    msg = ""
     p "sending message #{t}"
-    dealer.send_string("Request #{t}", 0)
-    # dealer.recv_string msg
-    # p "#{t} Response is #{msg}"
+    dealer.send_string("[#{id}] Request #{t}", 0)
+    dealer.recv_string msg
+    p "#{t} Response is #{msg}"
   end
 end
 
