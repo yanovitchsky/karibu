@@ -2,12 +2,13 @@
 module Karibu
   class Logger
     extend Forwardable
-    # include Concurrent::Async
+    include Concurrent::Async
 
     attr_accessor :logger, :error_logger
     def_delegators :logger, :level, :debug, :info, :warn, :error, :fatal
 
     def initialize(log_file)
+      super()
       create_directory_if_does_not_exist(log_file)
       @logger = ::Log4r::Logger.new log_file.to_s
       @pattern = ::Log4r::PatternFormatter.new(pattern: "[%l] %d => %m")

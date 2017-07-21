@@ -8,7 +8,8 @@ module Karibu
                   :resources,
                   :logger,
                   :error_logger,
-                  :pidfile,
+                  :boot_file,
+                  :pid_file,
                   :daemonize
 
 
@@ -47,8 +48,13 @@ module Karibu
       @error_logger || Karibu::Logger.new(Karibu.root.join("log/#{Karibu.env}.error.log"))
     end
 
+    # @return [String] File to load the application
+    def boot_file
+      @boot_file || Karibu.root.join('boot.rb')
+    end
+
     # @return [String] Full path of pid file
-    def pidfile
+    def pid_file
       @pidfile || Karibu.root.join('karibu.pid')
     end
 

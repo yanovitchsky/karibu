@@ -37,7 +37,7 @@ module Karibu
     end
 
     def check_type
-      raise BadRequestError unless (@msg[0].is_a?(Fixnum) && @msg[0] == 0)
+      raise BadRequestError unless (@msg[0].is_a?(Integer) && @msg[0] == 0)
     end
 
     def check_id

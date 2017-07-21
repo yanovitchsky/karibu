@@ -1,6 +1,6 @@
 # @author yanovitchsky
 module Karibu
   def self.root
-    Pathname.new(File.expand_path('../../../', __FILE__))
+    Pathname.new(Dir.pwd)
   end
 end

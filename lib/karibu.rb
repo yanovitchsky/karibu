@@ -11,6 +11,7 @@ require 'fileutils'
 
 require "karibu/environment"
 require "karibu/version"
+require "karibu/code_name"
 require "karibu/root_path"
 require "karibu/errors"
 require "karibu/configuration"
@@ -21,4 +22,5 @@ require "karibu/dispatcher"
 require "karibu/server"
 
 module Karibu
+  
 end

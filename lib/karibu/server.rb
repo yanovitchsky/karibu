@@ -19,32 +19,37 @@ module Karibu
     # Instance Methods
     def initialize
       @config = Karibu::Configuration.configuration
-      # p @config.pidfile
       @worker_pool = Concurrent::ThreadPoolExecutor.new(
         min_threads: @config.workers,
         max_thread: @config.workers + (@config.workers / 2).round,
         max_queue: 100
       )
       @ctx = ::ZMQ::Context.new
+      @router = @ctx.socket(ZMQ::ROUTER)
       @running = true
     end
 
     def run!
+      load @config.boot_file
       check_pid
       daemonize if daemonize?
       write_pid
       trap_signals
 
-      router = @ctx.socket(ZMQ::ROUTER)
-      router.bind(connection_string)
+
+      @router.bind(connection_string)
+      _console_print_
       while @running
         id = ''
         empty = ''
         payload = ''
-        router.recv_string id
-        router.recv_string empty
-        router.recv_string payload
-        exec!(id, payload, router)
+        @router.recv_string id
+        @router.recv_string empty
+        @router.recv_string payload
+        response = exec!(id, payload)
+        @router.send_string(id, ZMQ::SNDMORE)
+        @router.send_string("", ZMQ::SNDMORE)
+        @router.send_string(response.value)
       end
     end
 
@@ -52,20 +57,19 @@ module Karibu
       @running = false
       cleanup
       kill_pid
+      exit
     end
 
     def cleanup
-      p "cleaning up"
+      @router.close
+      @ctx.terminate
     end
 
-    def exec! id, request, router
+    def exec! id, request
       Concurrent::Future.execute(executor: @worker_pool) do
-        response = _exec!(request)
+        _exec!(request)
         # p "I received a message #{request}"
         # sleep rand(2)
-        router.send_string(id, ZMQ::SNDMORE)
-        router.send_string("", ZMQ::SNDMORE)
-        router.send_string(response)
       end
     end
 
@@ -77,17 +81,17 @@ module Karibu
         payload = Karibu::Request.new(request).decode
         response = Dispatcher.new.process(payload)
         stop_watch = Time.now
-        log(request, start_watch, stop_watch)
-        response(response, request)
+        log(payload, start_watch, stop_watch)
+        success_response(response, payload)
       rescue StandardError => e
         log_error(e)
         send_to_rollbar(e)
-        error_response(e, request)
+        error_response(e, payload)
       end
     end
 
     def check_pid
-      pidfile = @config.pidfile
+      pidfile = @config.pid_file
       if pidfile?
         case pid_status(pidfile)
         when :running, :not_owned
@@ -100,7 +104,7 @@ module Karibu
     end
 
     def write_pid
-      pidfile = @config.pidfile
+      pidfile = @config.pid_file
       if pidfile?
         begin
           File.open(pidfile, ::File::CREAT | ::File::EXCL | ::File::WRONLY){|f| f.write("#{Process.pid}") }
@@ -121,7 +125,7 @@ module Karibu
 
     def kill_pid
       begin
-        pid = ::File.read(@config.pidfile).to_i
+        pid = ::File.read(@config.pid_file).to_i
         Process.kill('QUIT', pid)
       rescue Errno::ESRCH
          # process exited normally
@@ -143,7 +147,7 @@ module Karibu
     end
 
     def pidfile?
-      !@config.pidfile.nil?
+      !@config.pid_file.nil?
     end
 
     def daemonize?
@@ -152,7 +156,10 @@ module Karibu
 
     def trap_signals
       trap(:QUIT) do   # graceful shutdown of run! loop
-        @running = false
+        self.stop
+      end
+      trap(:INT) do   # graceful shutdown of run! loop
+        self.stop
       end
     end
 
@@ -161,11 +168,11 @@ module Karibu
     end
 
     def log_error(e)
-      @config.error_logger.error(e.backtrace.join("\n\t"))
+      @config.error_logger.async.error(e.backtrace.join("\n\t"))
     end
 
     def log(request, start_watch, stop_watch)
-      @config.logger.info("resource=#{request.resource} method=#{request.method_called} params=#{request.params} duration=#{(stop_watch - start_watch).round(3)}")
+      @config.logger.async.info("resource=#{request.resource} method=#{request.method} params=#{request.params} duration=#{(stop_watch - start_watch).round(3)}")
     end
 
     def send_to_rollbar(e)
@@ -191,6 +198,17 @@ module Karibu
 
     def listen(router)
 
+    end
+
+    def _console_print_
+      puts "Karibu starting..."
+      puts "- Version #{Karibu::VERSION}, codename: #{Karibu::CODE_NAME}"
+      puts "- Min worker: #{@config.workers}"
+      puts "- Max worker: #{(@config.workers / 2).round}"
+      puts "- Environment: #{Karibu.env}"
+      puts "- Resources: #{@config.resources}"
+      puts "- Listening on tcp://#{@config.address}:#{@config.port}"
+      puts "Use Ctrl-C to stop"
     end
   end
 end

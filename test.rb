@@ -1,5 +1,6 @@
 require 'ffi-rzmq'
 require 'concurrent'
+require File.expand_path('../lib/karibu', __FILE__)
 
 ctx = ZMQ::Context.new
 # hash = Concurrent::Map.new
@@ -36,18 +37,24 @@ ctx = ZMQ::Context.new
 
 # sleep(2)
 
-10.times.each do |t|
+1.times.each do |t|
   Thread.new do
     dealer = ctx.socket(ZMQ::REQ)
     dealer.connect("tcp://127.0.0.1:5050")
-    id = ARGV[0] || 0
+    # id = ARGV[0] || 0
     sleep rand(10)
     msg = ""
     p "sending message #{t}"
-    dealer.send_string("[#{id}] Request #{t}", 0)
+    request = MessagePack.pack([0, '1', 'Dummy', 'greet', []])
+    p request
+    dealer.send_string(request, 0)
     dealer.recv_string msg
-    p "#{t} Response is #{msg}"
-  end
+    response = MessagePack.unpack(msg)
+    p response
+    # dealer.send_string("[#{id}] Request #{t}", 0)
+    # dealer.recv_string msg
+    # p "#{t} Response is #{msg}"
+  end.abort_on_exception = true
 end
 
 sleep(20)
