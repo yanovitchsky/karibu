@@ -56,15 +56,15 @@ At installation a bin is provided to launch you server.
 
 To start:
 
-   $ bundle exec karibu start
+   `$ bundle exec karibu start`
 
 To stop in daemon mode:
 
-   $ bundle exec karibu stop
+   `$ bundle exec karibu stop`
 
 To restart in daemon mode:
 
-   $ bundle exec karibu restart
+   `$ bundle exec karibu restart`
 
 ## License
 
