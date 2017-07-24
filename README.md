@@ -1,41 +1,68 @@
 # Karibu
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/karibu`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Karibu is a RPC Library in ruby, Allowing developer to write distributed object via zeromq protocol.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'karibu'
+gem 'karibu', git: 'git@gitlab.visibleo.fr:visibleornd/karibu.git'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
+## Configuration
+Write a file name `boot.rb` at the root of your project folder
 
-    $ gem install karibu
+```ruby
+require 'karibu'
+```
+
+To configure karibu options:
+
+```ruby
+Karibu::Configuration.configure do |config|
+  # All parameters are defaults if not mentioned
+  config.resources = [Klass] # List of class to expose to the network defaults to []
+  config.workers = 10 # Number of threads to handle concurrency - be careful too much threads will result to performance degradation - defaults
+  config.port = 5050 # Port where the service will listen
+  config.address = '0.0.0.0' # IP Address where the service will listen
+  config.timeout = 30 # Timeout long request (in seconds)
+  config.logger = # Info logs - default to log/environment.log
+  config.error_logger = # Error logs - default to log/environment.error.log
+  config.boot_file = # Specifiy wich file to use as boot- default boot.rb
+  config.pid_file = # Specifiy with pidfile to store pid - default karibu.pid
+  config.daemonize = false # Put process in background mode
+end
+```
 
 ## Usage
+In your Exposed classes, All methods exposed are class methods
 
-TODO: Write usage instructions here
+EX:
+```ruby
+class Dummy
+  def self.greet
+    "Hello World"
+  end
+end
+```
 
-## Development
+## Launch server
+At installation a bin is provided to launch you server.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+To start:
+   $ bundle exec karibu start
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To stop in daemon mode:
+   $ bundle exec karibu stop
 
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/karibu.
-
+To restart in daemon mode:
+   $ bundle exec karibu restart
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

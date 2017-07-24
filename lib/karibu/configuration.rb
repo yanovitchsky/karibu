@@ -25,7 +25,7 @@ module Karibu
 
     # @return [String] The ip address the server will listen to
     def address
-      @address || "127.0.0.1"
+      @address || "0.0.0.0"
     end
 
     # @return [Numeric] Time after wich the server will stop the request
