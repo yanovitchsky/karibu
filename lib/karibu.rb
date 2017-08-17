@@ -4,7 +4,7 @@ require 'msgpack'
 # require 'convulse-rb'
 require 'timeout'
 require 'singleton'
-require 'classify'
+require 'active_support/core_ext/string'
 require 'log4r'
 require 'pathname'
 require 'fileutils'
@@ -22,5 +22,5 @@ require "karibu/dispatcher"
 require "karibu/server"
 
 module Karibu
-  
+
 end

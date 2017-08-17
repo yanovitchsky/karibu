@@ -168,7 +168,8 @@ module Karibu
     end
 
     def log_error(e)
-      @config.error_logger.async.error(e.backtrace.join("\n\t"))
+      message = "#{e.message}\n\t" + e.backtrace.join("\n\t")
+      @config.error_logger.async.error(message)
     end
 
     def log(request, start_watch, stop_watch)

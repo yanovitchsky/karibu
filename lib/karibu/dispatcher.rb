@@ -27,7 +27,7 @@ module Karibu
     private
 
     def exec_request(payload)
-      klass = Classify.it!(payload.resource)
+      klass = class_from_string(payload.resource)
       method = payload.method.to_sym
       params = payload.params
       klass.send(method, *params)
@@ -41,7 +41,7 @@ module Karibu
 
     def check_resource(payload)
       begin
-        klass = Classify.it!(payload.resource)
+        klass = class_from_string(payload.resource)
         unless @resources.include? klass
           raise ResourceNotFoundError, "Cannot find resource #{payload.resource}"
         end
@@ -51,14 +51,14 @@ module Karibu
     end
 
     def check_method(payload)
-      klass = Classify.it!(payload.resource)
+      klass = class_from_string(payload.resource)
       unless klass.respond_to? payload.method.to_sym
         raise MethodNotFoundError, "Cannot find method #{payload.method} in resource #{payload.resource}"
       end
     end
 
     def check_arity(payload)
-      klass = Classify.it!(payload.resource)
+      klass = class_from_string(payload.resource)
       method = payload.method.to_sym
 
       if klass.method(method).arity != payload.params.size
@@ -77,6 +77,12 @@ module Karibu
     def report_to_rollbar(error, payload)
       if defined?(Rollbar)
         Rollbar.error(error, payload)
+      end
+    end
+
+    def class_from_string(str)
+      str.split('::').inject(Object) do |mod, class_name|
+        mod.const_get(class_name)
       end
     end
   end
