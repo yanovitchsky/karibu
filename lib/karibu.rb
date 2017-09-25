@@ -1,6 +1,6 @@
 require 'rubygems'
 # require 'bundler/setup'
-require 'celluloid/current'
+require 'celluloid'
 require 'ffi-rzmq'
 #require 'celluloid/zmq'
 require 'msgpack'
@@ -16,6 +16,10 @@ require 'active_support/inflector'
 # require "msgpack-jruby" if defined? JRUBY_VERSION
 # require 'concurrent'
 require "karibu/version"
+
+# msgpack types
+require "karibu/msgpack/datetime"
+
 require "karibu/doc"
 require "karibu/errors"
 require "karibu/error_handler"
