@@ -18,7 +18,7 @@ require 'active_support/inflector'
 require "karibu/version"
 
 # msgpack types
-require "karibu/msgpack/datetime"
+# require "karibu/msgpack/datetime"
 
 require "karibu/doc"
 require "karibu/errors"
