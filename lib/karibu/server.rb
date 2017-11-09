@@ -95,7 +95,7 @@ module Karibu
       if pidfile?
         case pid_status(pidfile)
         when :running, :not_owned
-          puts "A server is already running. Check #{@config.pidfile}"
+          puts "A server is already running. Check #{pidfile}"
           exit(1)
         when :dead
           File.delete(pidfile)
@@ -204,8 +204,8 @@ module Karibu
     def _console_print_
       puts "Karibu starting..."
       puts "- Version #{Karibu::VERSION}, codename: #{Karibu::CODE_NAME}"
-      puts "- Min worker: #{@config.workers}"
-      puts "- Max worker: #{(@config.workers / 2).round}"
+      puts "- Min worker: #{(@config.workers / 2).round}"
+      puts "- Max worker: #{@config.workers}"
       puts "- Environment: #{Karibu.env}"
       puts "- Resources: #{@config.resources}"
       puts "- Listening on tcp://#{@config.address}:#{@config.port}"
